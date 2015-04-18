@@ -12,7 +12,7 @@ require 'strict'  -- Enforce careful global variable usage.
 
 local dbg = {}
 
-dbg.hero_speed = 0.01
+dbg.hero_speed = 0.05
 dbg.baddy_speed = 1.0
 
 -- If dbg.cycles_per_frame = 1, then it's full speed (normal operation), if

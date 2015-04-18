@@ -17,6 +17,7 @@ local Baddy    = require 'baddy'
 local dbg      = require 'dbg'
 local draw     = require 'draw'
 local events   = require 'events'
+local Hero     = require 'hero'
 local walls    = require 'walls'
 
 
@@ -24,12 +25,9 @@ local walls    = require 'walls'
 -- Internal globals.
 --------------------------------------------------------------------------------
 
-local hero_x, hero_y = 0.1, 0.1
-local hero_w, hero_h -- This is currently set during initialization.
-local h_dx, h_dy     = 0, 0
-local keys_down      = {}
-
 local baddies        = {}
+local hero
+
 
 --------------------------------------------------------------------------------
 -- Internal functions.
@@ -143,28 +141,6 @@ local function draw_menu()
   font.draw_str('>', -border_w / 2, y, 0, 0.5, color, opts)
 end
 
--- Returns the theoretical outcome of moving based on the given keys and the
--- given start (x, y) point.
-local function move_for_keys(x, y, keys)
-
-  local hero_delta = {
-    left  = { -1,  0 },
-    right = {  1,  0 },
-    up    = {  0,  1 },
-    down  = {  0, -1 }
-  }
-
-  for key in pairs(keys) do
-    local delta = hero_delta[key]
-    if delta then
-      x = x + delta[1] * dbg.hero_speed
-      y = y + delta[2] * dbg.hero_speed
-    end
-  end
-
-  return x, y
-end
-
 
 --------------------------------------------------------------------------------
 -- Public functions.
@@ -172,44 +148,30 @@ end
 
 function game.update(dt)
 
-  assert(#keys_down <= 2)
-
   -- Update the baddies.
   for _, baddy in pairs(baddies) do
     baddy:update(dt)
   end
 
   -- Update the hero.
-  local w, h = hero_w, hero_h
-  local function done(x, y)
-    hero_x, hero_y = x, y
-  end
-  local x, y = move_for_keys(hero_x, hero_y, keys_down)
-  if not walls.hit_test(x, y, w, h) then return done(x, y) end
-
-  for key in pairs(keys_down) do
-    local k = {[key] = true}
-    local x, y = move_for_keys(hero_x, hero_y, k)
-    if not walls.hit_test(x, y, w, h) then return done(x, y) end
-  end
+  hero:update(dt)
 end
  
 function game.draw()
-  draw.hero(hero_x, hero_y, hero_w, hero_h)
   walls.draw()
-
   for _, baddy in pairs(baddies) do
     baddy:draw()
   end
+  hero:draw()
 end
 
 function game.keypressed(key, isrepeat)
   if isrepeat then return end
-  keys_down[key] = true
+  hero:key_down(key)
 end
 
 function game.keyreleased(key)
-  keys_down[key] = nil
+  hero:key_up(key)
 end
 
 
@@ -222,7 +184,7 @@ b:add_pace_pt( 7, 5)
 b:add_pace_pt(10, 5)
 table.insert(baddies, b)
 
-hero_w, hero_h = walls.sprite_size()
+hero = Hero:new(8, 8)
 
 
 --------------------------------------------------------------------------------

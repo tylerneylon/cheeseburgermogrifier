@@ -37,6 +37,9 @@ local level = [[
 
 local g = {}  -- Set during initialization.
 
+local sprite_scale = 0.85
+
+
 --------------------------------------------------------------------------------
 -- Internal functions.
 --------------------------------------------------------------------------------
@@ -126,10 +129,16 @@ function walls.hit_test(x, y, w, h)
   return false
 end
 
+function walls.sprite_hit_test(gx, gy)
+  local x, y = walls.grid_to_virt_pt(gx, gy)
+  local w = sprite_scale / g.w * 2
+  local h = sprite_scale / g.h * 2
+  return walls.hit_test(x, y, w, h)
+end
+
 -- Returns sw, sh (width, height) for the current level.
 function walls.sprite_size()
-  local scale = 0.85  -- Shrinkage makes it easier to fit in 1-wide spaces.
-  return 2 / g.w * scale, 2 / g.h * scale
+  return 2 / g.w * sprite_scale, 2 / g.h * sprite_scale
 end
 
 function walls.grid_to_virt_pt(gx, gy)
