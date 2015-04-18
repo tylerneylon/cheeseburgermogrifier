@@ -36,7 +36,7 @@ end
 function Baddy:draw()
   local x, y = walls.grid_to_virt_pt(self.gx, self.gy)
   local w, h = self.w, self.h
-  draw.hero(x, y, w, h)
+  draw.hero(x, y, w, h, 'bad')
 end
 
 function Baddy:update(dt)

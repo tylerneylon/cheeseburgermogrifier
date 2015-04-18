@@ -119,7 +119,7 @@ end
 
 function draw.str(s, x, y, limit, align)
   local win_w, win_h = love.graphics.getDimensions()
-  x, y = (x + 1) * win_w / 2, (y + 1) * win_h / 2
+  x, y = (x + 1) * win_w / 2, (1 - y) * win_h / 2
   limit = limit * win_w / 2
 
   if align == 'right' then x = x - limit end
@@ -152,7 +152,7 @@ end
 -- LD32 specific functions.
 --------------------------------------------------------------------------------
 
-function draw.hero(x, y, w, h)
+function draw.hero(x, y, w, h, label)
   w = w or 0.15
   h = h or 0.2
 
@@ -174,6 +174,12 @@ function draw.hero(x, y, w, h)
   local leg_y = y + 0.1 * h
   draw.line(cx, py, ax1, leg_y)
   draw.line(cx, py, ax2, leg_y)
+
+  -- label
+  if label then
+    love.graphics.setColor({0, 200, 200})
+    draw.str(label, x, y + h, w, 'left')
+  end
 end
 
 
