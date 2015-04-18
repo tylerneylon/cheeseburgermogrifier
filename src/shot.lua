@@ -38,6 +38,14 @@ local function normalize(v)
   v[2] = v[2] / n
 end
 
+local function complex_mult(p, q)
+  return {p[1] * q[1] - p[2] * q[2], p[1] * q[2] + p[2] * q[1]}
+end
+
+local function cis(theta)
+  return {math.cos(theta), math.sin(theta)}
+end
+
 
 --------------------------------------------------------------------------------
 -- The Shot class.
@@ -53,6 +61,18 @@ function Shot:new(g_pt, dir)
   local s = { gx = g_pt[1], gy = g_pt[2], dir = dir }
   s.ending_perc = 0
   s.hit_pt = walls.ray_hits_at({s.gx, s.gy}, s.dir)
+
+  -- Set up random directions for hit blasts.
+  s.hit_blasts = {}
+  local num_blasts = math.random(5, 10)
+  for i = 1, num_blasts do
+    local blast = {
+      dir = complex_mult({-s.dir[1], -s.dir[2]}, cis(math.random() * 2.0 - 1.0)),
+      len = dbg.shot_len * math.random()
+    }
+    table.insert(s.hit_blasts, blast)
+  end
+
   return setmetatable(s, {__index = self})
 end
 
@@ -67,6 +87,17 @@ function Shot:draw()
   love.graphics.setColor({60, 160, 220})
   draw.line(x1, y1, x2, y2)
   love.graphics.setLineWidth(1)
+
+  if self.ending_perc == 0 then return end
+
+  for _, blast in pairs(self.hit_blasts) do
+    local len = blast.len * self.ending_perc
+    local to1 = self.hit_pt[1] + blast.dir[1] * len
+    local to2 = self.hit_pt[2] + blast.dir[2] * len
+    local x1, y1 = walls.grid_to_virt_pt(self.hit_pt[1], self.hit_pt[2])
+    local x2, y2 = walls.grid_to_virt_pt(to1, to2)
+    draw.line(x1, y1, x2, y2)
+  end
 end
 
 function Shot:update(dt)
