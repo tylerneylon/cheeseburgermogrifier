@@ -35,6 +35,7 @@ local level = [[
 11111111111111
 ]]
 
+local g = {}  -- Set during initialization.
 
 --------------------------------------------------------------------------------
 -- Internal functions.
@@ -72,7 +73,6 @@ end
 --------------------------------------------------------------------------------
 
 function walls.draw()
-  local g = get_wall_grid()
   local w, h = 2 / g.w, 2 / g.h
   --print('w, h =', w, h)
   local x, y = -1, 1 - h
@@ -90,7 +90,6 @@ function walls.draw()
 end
 
 function walls.hit_test(x, y, w, h)
-  local g = get_wall_grid()
 
   -- Box radii.
   local rw, rh = w / 2, h / 2
@@ -129,17 +128,23 @@ end
 
 -- Returns sw, sh (width, height) for the current level.
 function walls.sprite_size()
-  local g = get_wall_grid()
   local scale = 0.85  -- Shrinkage makes it easier to fit in 1-wide spaces.
   return 2 / g.w * scale, 2 / g.h * scale
 end
 
 function walls.grid_to_virt_pt(gx, gy)
-  local g = get_wall_grid()
   local vx = 2 * (gx - 1) / g.w - 1
   local vy = 2 * (gy - 1) / g.h - 1
   return vx, vy
 end
+
+
+--------------------------------------------------------------------------------
+-- Initialization.
+--------------------------------------------------------------------------------
+
+-- If we ever change levels, we'll want to update g with each new level.
+g = get_wall_grid()
 
 
 --------------------------------------------------------------------------------
