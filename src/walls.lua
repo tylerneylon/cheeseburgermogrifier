@@ -185,10 +185,42 @@ end
 function walls.grid_pt_hits_a_wall(gx, gy)
   for x = math.ceil(gx - 1), math.floor(gx) do
     for y = math.ceil(gy - 1), math.floor(gy) do
-      if g[x][y] == 1 then return true end
+      if g[x] and g[x][y] == 1 then return true end
     end
   end
   return false
+end
+
+-- TODO Remove the redundancy between the following two functions.
+
+-- Returns either false or the first point along the ray where we
+-- hit a wall.
+function walls.ray_hits_at(pt, dir)
+  assert(pt and dir)
+  local dst = {pt[1], pt[2]}  -- A local copy we can edit.
+  dir = {dir[1], dir[2]}      -- A local copy we can edit.
+  normalize(dir)
+
+  while pt[1] >= 0 and pt[1] <= (g.w + 1) and
+        pt[2] >= 0 and pt[2] <= (g.h + 1) do
+    local t = {math.huge, math.huge}
+    local q = {}
+    for i = 1, 2 do
+      if dir[i] ~= 0 then
+        q[i] = move_by_one(pt[i], dir[i])
+        t[i] = (q[i] - pt[i]) / dir[i]
+      end
+    end
+    local ind = 1
+    if t[2] < t[1] then ind = 2 end
+    for i = 1, 2 do
+      pt[i] = pt[i] + t[ind] * dir[i]
+    end
+    if walls.grid_pt_hits_a_wall(pt[1], pt[2]) then
+      return pt
+    end
+  end
+  return false  -- There was no collision.
 end
 
 -- Tests if walls block the line of sight between the two given points.
