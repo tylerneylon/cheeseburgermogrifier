@@ -16,6 +16,7 @@ local anim     = require 'anim'
 local dbg      = require 'dbg'
 local draw     = require 'draw'
 local events   = require 'events'
+local walls    = require 'walls'
 
 
 --------------------------------------------------------------------------------
@@ -151,6 +152,7 @@ end
  
 function game.draw()
   draw.hero(hero_x, hero_y)
+  walls.draw()
 end
 
 function game.keypressed(key, isrepeat)
