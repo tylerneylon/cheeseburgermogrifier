@@ -150,7 +150,7 @@ function game.update(dt)
 
   -- Update the baddies.
   for _, baddy in pairs(baddies) do
-    baddy:update(dt)
+    baddy:update(dt, hero)
   end
 
   -- Update the hero.

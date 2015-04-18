@@ -70,6 +70,24 @@ local function get_wall_grid()
   return g
 end
 
+local function sign(x)
+  if x < 0 then return -1 end
+  if x > 0 then return  1 end
+  return 0
+end
+
+-- Returns the size of the given 2-vector.
+local function norm(v)
+  return math.sqrt(v[1] ^ 2 + v[2] ^ 2)
+end
+
+-- Transforms the given 2-vector into a unit vector.
+local function normalize(v)
+  local n = norm(v)
+  v[1] = v[1] / n
+  v[2] = v[2] / n
+end
+
 
 --------------------------------------------------------------------------------
 -- Public functions.
@@ -136,15 +154,71 @@ function walls.sprite_hit_test(gx, gy)
   return walls.hit_test(x, y, w, h)
 end
 
--- Returns sw, sh (width, height) for the current level.
+-- Returns w, h (width, height) for the current level.
+-- In virt coords.
 function walls.sprite_size()
   return 2 / g.w * sprite_scale, 2 / g.h * sprite_scale
+end
+
+-- Same as walls.sprite_size, but the return value is
+-- in grid coords.
+function walls.grid_sprite_size()
+  return sprite_scale, sprite_scale
 end
 
 function walls.grid_to_virt_pt(gx, gy)
   local vx = 2 * (gx - 1) / g.w - 1
   local vy = 2 * (gy - 1) / g.h - 1
   return vx, vy
+end
+
+-- Supporting function for grid_pts_can_see_each_other.
+-- This expects dir ~= 0.
+local function move_by_one(p, dir)
+  if dir > 0 then
+    return math.floor(p + 1)
+  else
+    return math.ceil(p - 1)
+  end
+end
+
+function walls.grid_pt_hits_a_wall(gx, gy)
+  for x = math.ceil(gx - 1), math.floor(gx) do
+    for y = math.ceil(gy - 1), math.floor(gy) do
+      if g[x][y] == 1 then return true end
+    end
+  end
+  return false
+end
+
+-- Tests if walls block the line of sight between the two given points.
+function walls.grid_pts_can_see_each_other(pt1, pt2)
+  -- We'll cast a ray from gx1, gy1 toward the other point.
+  local pt  = {pt1[1], pt1[2]}  -- Copy to avoid changing it.
+  local dst = pt2
+  local dir = {dst[1] - pt[1], dst[2] - pt[2]}
+  normalize(dir)
+
+  while sign(dir[1]) == sign(dst[1] - pt[1]) and
+        sign(dir[2]) == sign(dst[2] - pt[2]) do
+    local t = {math.huge, math.huge}
+    local q = {}
+    for i = 1, 2 do
+      if dir[i] ~= 0 then
+        q[i] = move_by_one(pt[i], dir[i])
+        t[i] = (q[i] - pt[i]) / dir[i]
+      end
+    end
+    local ind = 1
+    if t[2] < t[1] then ind = 2 end
+    for i = 1, 2 do
+      pt[i] = pt[i] + t[ind] * dir[i]
+    end
+    if walls.grid_pt_hits_a_wall(pt[1], pt[2]) then
+      return false  -- They can't see each other.
+    end
+  end
+  return true  -- They can see each other.
 end
 
 

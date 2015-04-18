@@ -72,6 +72,7 @@ local Hero = {w = hero_w, h = hero_h}
 -- This accepts and thinks mostly in terms of grid coords.
 function Hero:new(gx, gy)
   local h = { gx = gx, gy = gy, keys_down = {} }
+  h.gw, h.gh = walls.grid_sprite_size()
   return setmetatable(h, {__index = self})
 end
 
