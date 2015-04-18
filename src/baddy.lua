@@ -112,8 +112,11 @@ function Baddy:draw()
     self:can_see_hero(self.hero, true)
   end
 
-  for _, shot in pairs(self.shots) do
-    shot:draw()
+  for i = #self.shots, 1, -1 do
+    self.shots[i]:draw()
+    if self.shots[i].done then
+      table.remove(self.shots, i)
+    end
   end
 end
 
