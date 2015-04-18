@@ -174,12 +174,16 @@ function game.update(dt)
 
   assert(#keys_down <= 2)
 
-  local w, h = hero_w, hero_h
+  -- Update the baddies.
+  for _, baddy in pairs(baddies) do
+    baddy:update(dt)
+  end
 
+  -- Update the hero.
+  local w, h = hero_w, hero_h
   local function done(x, y)
     hero_x, hero_y = x, y
   end
-
   local x, y = move_for_keys(hero_x, hero_y, keys_down)
   if not walls.hit_test(x, y, w, h) then return done(x, y) end
 
@@ -213,7 +217,10 @@ end
 -- Initialization.
 --------------------------------------------------------------------------------
 
-table.insert(baddies, Baddy:new(8, 5))
+local b = Baddy:new(8, 5)
+b:add_pace_pt( 7, 5)
+b:add_pace_pt(10, 5)
+table.insert(baddies, b)
 
 hero_w, hero_h = walls.sprite_size()
 
