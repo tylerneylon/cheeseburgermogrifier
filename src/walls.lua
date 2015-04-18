@@ -127,6 +127,13 @@ function walls.hit_test(x, y, w, h)
   return false
 end
 
+-- Returns sw, sh (width, height) for the current level.
+function walls.sprite_size()
+  local g = get_wall_grid()
+  local scale = 0.85  -- Shrinkage makes it easier to fit in 1-wide spaces.
+  return 2 / g.w * scale, 2 / g.h * scale
+end
+
 
 --------------------------------------------------------------------------------
 -- Return.

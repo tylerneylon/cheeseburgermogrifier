@@ -16,6 +16,7 @@ require 'strict'  -- Enforce careful global variable usage.
 --------------------------------------------------------------------------------
 
 local draw     = require 'draw'
+local walls    = require 'walls'
 
 
 --------------------------------------------------------------------------------
@@ -25,7 +26,8 @@ local draw     = require 'draw'
 local Baddy = {w = 0.05, h = 0.4}
 
 function Baddy:new(x, y)
-  local b = {x = x, y = y, score = 0}
+  local b = { x = x, y = y }
+  b.w, b.h = walls.sprite_size()
   return setmetatable(b, {__index = self})
 end
 

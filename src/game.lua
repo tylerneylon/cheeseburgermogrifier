@@ -25,6 +25,7 @@ local walls    = require 'walls'
 --------------------------------------------------------------------------------
 
 local hero_x, hero_y = 0.1, 0.1
+local hero_w, hero_h -- This is currently set during initialization.
 local h_dx, h_dy     = 0, 0
 local keys_down      = {}
 
@@ -171,26 +172,26 @@ end
 
 function game.update(dt)
 
-  -- TODO Put the hero size in one place.
-
   assert(#keys_down <= 2)
+
+  local w, h = hero_w, hero_h
 
   local function done(x, y)
     hero_x, hero_y = x, y
   end
 
   local x, y = move_for_keys(hero_x, hero_y, keys_down)
-  if not walls.hit_test(x, y, 0.15, 0.2) then return done(x, y) end
+  if not walls.hit_test(x, y, w, h) then return done(x, y) end
 
   for key in pairs(keys_down) do
     local k = {[key] = true}
     local x, y = move_for_keys(hero_x, hero_y, k)
-    if not walls.hit_test(x, y, 0.15, 0.2) then return done(x, y) end
+    if not walls.hit_test(x, y, w, h) then return done(x, y) end
   end
 end
  
 function game.draw()
-  draw.hero(hero_x, hero_y)
+  draw.hero(hero_x, hero_y, hero_w, hero_h)
   walls.draw()
 
   for _, baddy in pairs(baddies) do
@@ -213,6 +214,8 @@ end
 --------------------------------------------------------------------------------
 
 table.insert(baddies, Baddy:new(0.5, 0.5))
+
+hero_w, hero_h = walls.sprite_size()
 
 
 --------------------------------------------------------------------------------
