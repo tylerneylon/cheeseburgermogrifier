@@ -148,6 +148,14 @@ end
 function game.update(dt)
   hero_x = hero_x + h_dx * dbg.hero_speed
   hero_y = hero_y + h_dy * dbg.hero_speed
+
+  -- TODO Put the hero size in one place.
+  if walls.hit_test(hero_x, hero_y, 0.15, 0.2) then
+    hero_x = hero_x - h_dx * dbg.hero_speed
+    hero_y = hero_y - h_dy * dbg.hero_speed
+    h_dx, h_dy = 0, 0
+    keys_down = {}
+  end
 end
  
 function game.draw()

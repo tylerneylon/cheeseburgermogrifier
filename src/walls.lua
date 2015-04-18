@@ -21,11 +21,18 @@ local draw     = require 'draw'
 --------------------------------------------------------------------------------
 
 local level = [[
-111111111
-1       1
-1       1
-1       1
-111111111
+11111111111111
+1            1
+1            1
+1            1
+1            1
+1            1
+1            1
+1            1
+1            1
+1            1
+1            1
+11111111111111
 ]]
 
 
@@ -83,7 +90,41 @@ function walls.draw()
 end
 
 function walls.hit_test(x, y, w, h)
+  local g = get_wall_grid()
 
+  -- Box radii.
+  local rw, rh = w / 2, h / 2
+  -- Box center.
+  local cx, cy = x + rw, y + rh
+
+  -- Ok, this is not efficient. But probably good enough anyway.
+
+  local function to_virt_box(gx, gy)
+    local rw, rh = 1 / g.w, 1 / g.h
+    local cx = 2 * (gx - 1) / g.w - 1 + rw
+    local cy = 2 * (gy - 1) / g.h - 1 + rh
+    return cx, cy, rw, rh
+  end
+
+  local function is_a_hit(gx, gy)
+    local w_cx, w_cy, w_rw, w_rh = to_virt_box(gx, gy)
+    if math.abs(w_cx - cx) < w_rw + rw and 
+       math.abs(w_cy - cy) < w_rh + rh then
+
+       return true
+     end
+    return false
+  end
+
+  for gy = 1, g.h do
+    for gx = 1, g.w do
+      if g[gx][gy] == 1 and is_a_hit(gx, gy) then
+        return true
+      end
+    end
+  end
+
+  return false
 end
 
 
