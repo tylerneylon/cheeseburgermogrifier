@@ -101,12 +101,6 @@ function Hero:update(dt)
   end
 end
 
-function Hero:score_up(ball)
-  sounds.point:play()
-  self.score = self.score + ball:value()
-  Ball:new(ball)
-end
-
 function Hero:key_down(key)
   local keys_to_track = {
     up    = true,

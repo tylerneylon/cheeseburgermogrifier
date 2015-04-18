@@ -18,6 +18,7 @@ require 'strict'  -- Enforce careful global variable usage.
 local dbg      = require 'dbg'
 local draw     = require 'draw'
 local Hero     = require 'hero'
+local Shot     = require 'shot'
 local walls    = require 'walls'
 
 
@@ -59,7 +60,10 @@ function Baddy:new(gx, gy)
   return setmetatable(b, {__index = self})
 end
 
+-- This returns either false (if we can't see the hero) or
+-- the point, in grid coords, that can be seen.
 function Baddy:can_see_hero(hero, do_draw)
+  assert(hero)
   local see_x = hero.gx + hero.gw / 2
   local see_pts = {
     { see_x, hero.gy + 0.2 * hero.gh },
@@ -71,21 +75,23 @@ function Baddy:can_see_hero(hero, do_draw)
 
   if do_draw then
     love.graphics.setColor({120, 120, 0})
-    --love.graphics.setColor(draw.white) -- TEMP
-    --love.graphics.setLineWidth(2)
-    for _, see_pt in pairs(see_pts) do
-      local x1, y1 = walls.grid_to_virt_pt(eye[1], eye[2])
-      local x2, y2 = walls.grid_to_virt_pt(see_pt[1], see_pt[2])
-      if walls.grid_pts_can_see_each_other(eye, see_pt) then
-        love.graphics.setColor(draw.white)
-      else
-        love.graphics.setColor({120, 120, 0})
-      end
-      draw.line(x1, y1, x2, y2)
-    end
   end
 
+  local can_see = false
 
+  for _, see_pt in pairs(see_pts) do
+    local x1, y1 = walls.grid_to_virt_pt(eye[1], eye[2])
+    local x2, y2 = walls.grid_to_virt_pt(see_pt[1], see_pt[2])
+    if walls.grid_pts_can_see_each_other(eye, see_pt) then
+      if do_draw then love.graphics.setColor(draw.white) end
+      can_see = {see_pt[1], see_pt[2]}
+    else
+      if do_draw then love.graphics.setColor({120, 120, 0}) end
+    end
+    if do_draw then draw.line(x1, y1, x2, y2) end
+  end
+
+  return can_see
 end
 
 function Baddy:draw()
@@ -96,6 +102,10 @@ function Baddy:draw()
   -- TODO TEMP DEBUG
   if self.hero then
     self:can_see_hero(self.hero, true)
+  end
+
+  if self.shot then
+    self.shot:draw()
   end
 end
 
@@ -138,16 +148,21 @@ function Baddy:update(dt, hero)
   end
 
   -- Check to see if we can see the hero.
+  local seen_pt = self:can_see_hero(hero)
+  if seen_pt and not self.shot then
+    local g_pt = { self.gx + 0.5 * self.gw, self.gy + 0.5 * self.gh }
+    local dir = { seen_pt[1] - g_pt[1], seen_pt[2] - g_pt[2] }
+    normalize(dir)
+    self.shot = Shot:new(g_pt, dir)
+  end
 
   -- TEMP
   self.hero = hero
 
-end
+  if self.shot then
+    self.shot:update(dt)
+  end
 
-function Baddy:score_up(ball)
-  sounds.point:play()
-  self.score = self.score + ball:value()
-  Ball:new(ball)
 end
 
 
