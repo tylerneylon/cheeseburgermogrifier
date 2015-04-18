@@ -13,6 +13,7 @@ local game = {}
 --------------------------------------------------------------------------------
 
 local anim     = require 'anim'
+local Baddy    = require 'baddy'
 local dbg      = require 'dbg'
 local draw     = require 'draw'
 local events   = require 'events'
@@ -23,10 +24,11 @@ local walls    = require 'walls'
 -- Internal globals.
 --------------------------------------------------------------------------------
 
-local hero_x, hero_y = 0, 0
+local hero_x, hero_y = 0.1, 0.1
 local h_dx, h_dy     = 0, 0
 local keys_down      = {}
 
+local baddies        = {}
 
 --------------------------------------------------------------------------------
 -- Internal functions.
@@ -190,6 +192,10 @@ end
 function game.draw()
   draw.hero(hero_x, hero_y)
   walls.draw()
+
+  for _, baddy in pairs(baddies) do
+    baddy:draw()
+  end
 end
 
 function game.keypressed(key, isrepeat)
@@ -205,6 +211,9 @@ end
 --------------------------------------------------------------------------------
 -- Initialization.
 --------------------------------------------------------------------------------
+
+table.insert(baddies, Baddy:new(0.5, 0.5))
+
 
 --------------------------------------------------------------------------------
 -- Return.
