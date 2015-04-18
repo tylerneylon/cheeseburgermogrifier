@@ -28,23 +28,50 @@ local level = [[
 111111111
 ]]
 
+
+--------------------------------------------------------------------------------
+-- Internal functions.
+--------------------------------------------------------------------------------
+
+_ = 0
+
+-- Returns a tile grid. The lower-left corner is point (1, 1); it's 1-indexed.
+local function get_wall_grid()
+  local g = {}  -- This is the grid.
+  local first_line = level:match('(.-)\n')
+  g.w = #first_line
+  _, g.h = level:gsub('\n', '')  -- Count the number of lines.
+  local x, y = 1, g.h
+  for line in level:gmatch('(.-)\n') do
+    for i = 1, #line do
+      if g[x] == nil then g[x] = {} end
+      local c = line:sub(i, i)
+      if c == '1' then
+        g[x][y] = 1
+      else
+        g[x][y] = 0
+      end
+      x = x + 1
+    end
+    x = 1
+    y = y - 1
+  end
+  return g
+end
+
+
 --------------------------------------------------------------------------------
 -- Public functions.
 --------------------------------------------------------------------------------
 
 function walls.draw()
-  local first_line = level:match('(.-)\n')
-  local    grid_w = #first_line
-  local _, grid_h = level:gsub('\n', '')  -- Count the number of lines.
-  --print('grid_w =', grid_w)
-  --print('grid_h =', grid_h)
-  local w, h = 2 / grid_w, 2 / grid_h
+  local g = get_wall_grid()
+  local w, h = 2 / g.w, 2 / g.h
   --print('w, h =', w, h)
   local x, y = -1, 1 - h
-  for line in level:gmatch('(.-)\n') do
-    for i = 1, #line do
-      local c = line:sub(i, i)
-      if c == '1' then
+  for gy = g.h, 1, -1 do
+    for gx = 1, g.w do
+      if g[gx][gy] == 1 then
         --print(string.format('drawing: %10g, %10g, %10g, %10g', x, y, w, h))
         draw.rect(x, y, w, h)
       end
@@ -53,6 +80,10 @@ function walls.draw()
     x = -1
     y = y - h
   end
+end
+
+function walls.hit_test(x, y, w, h)
+
 end
 
 
