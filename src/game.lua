@@ -140,21 +140,50 @@ local function draw_menu()
   font.draw_str('>', -border_w / 2, y, 0, 0.5, color, opts)
 end
 
+-- Returns the theoretical outcome of moving based on the given keys and the
+-- given start (x, y) point.
+local function move_for_keys(x, y, keys)
+
+  local hero_delta = {
+    left  = { -1,  0 },
+    right = {  1,  0 },
+    up    = {  0,  1 },
+    down  = {  0, -1 }
+  }
+
+  for key in pairs(keys) do
+    local delta = hero_delta[key]
+    if delta then
+      x = x + delta[1] * dbg.hero_speed
+      y = y + delta[2] * dbg.hero_speed
+    end
+  end
+
+  return x, y
+end
+
 
 --------------------------------------------------------------------------------
 -- Public functions.
 --------------------------------------------------------------------------------
 
 function game.update(dt)
-  hero_x = hero_x + h_dx * dbg.hero_speed
-  hero_y = hero_y + h_dy * dbg.hero_speed
 
   -- TODO Put the hero size in one place.
-  if walls.hit_test(hero_x, hero_y, 0.15, 0.2) then
-    hero_x = hero_x - h_dx * dbg.hero_speed
-    hero_y = hero_y - h_dy * dbg.hero_speed
-    h_dx, h_dy = 0, 0
-    keys_down = {}
+
+  assert(#keys_down <= 2)
+
+  local function done(x, y)
+    hero_x, hero_y = x, y
+  end
+
+  local x, y = move_for_keys(hero_x, hero_y, keys_down)
+  if not walls.hit_test(x, y, 0.15, 0.2) then return done(x, y) end
+
+  for key in pairs(keys_down) do
+    local k = {[key] = true}
+    local x, y = move_for_keys(hero_x, hero_y, k)
+    if not walls.hit_test(x, y, 0.15, 0.2) then return done(x, y) end
   end
 end
  
@@ -165,36 +194,11 @@ end
 
 function game.keypressed(key, isrepeat)
   if isrepeat then return end
-  local hero_delta = {
-    left  = { -1,  0 },
-    right = {  1,  0 },
-    up    = {  0,  1 },
-    down  = {  0, -1 }
-  }
-  local delta = hero_delta[key]
-  if delta == nil then return end
   keys_down[key] = true
-  h_dx = h_dx + delta[1]
-  h_dy = h_dy + delta[2]
-  --h_dx, h_dy = delta[1], delta[2]
 end
 
 function game.keyreleased(key)
-  -- Skip out early if we don't care about this key.
-  if not keys_down[key] then return end
-
-  local hero_delta = {
-    left  = { -1,  0 },
-    right = {  1,  0 },
-    up    = {  0,  1 },
-    down  = {  0, -1 }
-  }
-  local delta = hero_delta[key]
-
-  h_dx = h_dx - delta[1]
-  h_dy = h_dy - delta[2]
-
-  keys_down[key] = false
+  keys_down[key] = nil
 end
 
 
