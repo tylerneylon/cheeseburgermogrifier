@@ -134,6 +134,13 @@ function walls.sprite_size()
   return 2 / g.w * scale, 2 / g.h * scale
 end
 
+function walls.grid_to_virt_pt(gx, gy)
+  local g = get_wall_grid()
+  local vx = 2 * (gx - 1) / g.w - 1
+  local vy = 2 * (gy - 1) / g.h - 1
+  return vx, vy
+end
+
 
 --------------------------------------------------------------------------------
 -- Return.

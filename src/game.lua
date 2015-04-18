@@ -213,7 +213,7 @@ end
 -- Initialization.
 --------------------------------------------------------------------------------
 
-table.insert(baddies, Baddy:new(0.5, 0.5))
+table.insert(baddies, Baddy:new(8, 5))
 
 hero_w, hero_h = walls.sprite_size()
 

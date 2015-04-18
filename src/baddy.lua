@@ -25,15 +25,18 @@ local walls    = require 'walls'
 
 local Baddy = {w = 0.05, h = 0.4}
 
-function Baddy:new(x, y)
-  local b = { x = x, y = y }
+-- This accepts and thinks mostly in terms of
+-- grid coords.
+function Baddy:new(gx, gy)
+  local b = { gx = gx, gy = gy }
   b.w, b.h = walls.sprite_size()
   return setmetatable(b, {__index = self})
 end
 
 function Baddy:draw()
+  local x, y = walls.grid_to_virt_pt(self.gx, self.gy)
   local w, h = self.w, self.h
-  draw.hero(self.x, self.y, self.w, self.h)
+  draw.hero(x, y, w, h)
 end
 
 function Baddy:update(dt)
