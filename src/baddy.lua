@@ -23,6 +23,13 @@ local walls    = require 'walls'
 
 
 --------------------------------------------------------------------------------
+-- Internal globals.
+--------------------------------------------------------------------------------
+
+local clock = 0
+
+
+--------------------------------------------------------------------------------
 -- Utility functions.
 --------------------------------------------------------------------------------
 
@@ -57,6 +64,7 @@ function Baddy:new(gx, gy)
   local b = { gx = gx, gy = gy }
   b.w,  b.h  = walls.sprite_size()
   b.gw, b.gh = walls.grid_sprite_size()
+  b.shots = {}
   return setmetatable(b, {__index = self})
 end
 
@@ -71,7 +79,7 @@ function Baddy:can_see_hero(hero, do_draw)
   }
 
   local eye = { self.gx + 0.5 * self.gw,
-                self.gy + 0.8 * self.gh }
+                self.gy + 0.5 * self.gh }
 
   if do_draw then
     love.graphics.setColor({120, 120, 0})
@@ -104,8 +112,8 @@ function Baddy:draw()
     self:can_see_hero(self.hero, true)
   end
 
-  if self.shot then
-    self.shot:draw()
+  for _, shot in pairs(self.shots) do
+    shot:draw()
   end
 end
 
@@ -137,7 +145,24 @@ function Baddy:add_pace_pt(gx, gy)
   end
 end
 
+function Baddy:can_shoot_now()
+  if self.last_shot_fired_at == nil then return true end
+
+  local time_since_last_shot = clock - self.last_shot_fired_at
+  return time_since_last_shot > dbg.baddy_fire_interval
+end
+
+function Baddy:shoot_at(dest)
+  local g_pt = { self.gx + 0.5 * self.gw, self.gy + 0.5 * self.gh }
+  local dir = { dest[1] - g_pt[1], dest[2] - g_pt[2] }
+  normalize(dir)
+  table.insert(self.shots, Shot:new(g_pt, dir))
+  self.last_shot_fired_at = clock
+end
+
 function Baddy:update(dt, hero)
+  clock = clock + dt
+
   self.gx = self.gx + dt * self.delta[1] * dbg.baddy_speed
   self.gy = self.gy + dt * self.delta[2] * dbg.baddy_speed
 
@@ -149,20 +174,16 @@ function Baddy:update(dt, hero)
 
   -- Check to see if we can see the hero.
   local seen_pt = self:can_see_hero(hero)
-  if seen_pt and not self.shot then
-    local g_pt = { self.gx + 0.5 * self.gw, self.gy + 0.5 * self.gh }
-    local dir = { seen_pt[1] - g_pt[1], seen_pt[2] - g_pt[2] }
-    normalize(dir)
-    self.shot = Shot:new(g_pt, dir)
+  if seen_pt and self:can_shoot_now() then
+    self:shoot_at(seen_pt)
   end
 
   -- TEMP
   self.hero = hero
 
-  if self.shot then
-    self.shot:update(dt)
+  for _, shot in pairs(self.shots) do
+    shot:update(dt)
   end
-
 end
 
 
