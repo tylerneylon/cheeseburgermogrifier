@@ -13,8 +13,18 @@ local game = {}
 --------------------------------------------------------------------------------
 
 local anim     = require 'anim'
+local dbg      = require 'dbg'
 local draw     = require 'draw'
 local events   = require 'events'
+
+
+--------------------------------------------------------------------------------
+-- Internal globals.
+--------------------------------------------------------------------------------
+
+local hero_x, hero_y = 0, 0
+local h_dx, h_dy     = 0, 0
+local keys_down      = {}
 
 
 --------------------------------------------------------------------------------
@@ -135,16 +145,46 @@ end
 --------------------------------------------------------------------------------
 
 function game.update(dt)
+  hero_x = hero_x + h_dx * dbg.hero_speed
+  hero_y = hero_y + h_dy * dbg.hero_speed
 end
  
 function game.draw()
-  draw.hero(0, 0)
+  draw.hero(hero_x, hero_y)
 end
 
 function game.keypressed(key, isrepeat)
+  if isrepeat then return end
+  local hero_delta = {
+    left  = { -1,  0 },
+    right = {  1,  0 },
+    up    = {  0,  1 },
+    down  = {  0, -1 }
+  }
+  local delta = hero_delta[key]
+  if delta == nil then return end
+  keys_down[key] = true
+  h_dx = h_dx + delta[1]
+  h_dy = h_dy + delta[2]
+  --h_dx, h_dy = delta[1], delta[2]
 end
 
 function game.keyreleased(key)
+  -- Skip out early if we don't care about this key.
+  if not keys_down[key] then return end
+
+  local hero_delta = {
+    left  = { -1,  0 },
+    right = {  1,  0 },
+    up    = {  0,  1 },
+    down  = {  0, -1 }
+  }
+  local delta = hero_delta[key]
+
+  h_dx = h_dx - delta[1]
+  h_dy = h_dy - delta[2]
+
+  keys_down[key] = false
 end
 
 
