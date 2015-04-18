@@ -83,7 +83,7 @@ function Shot:draw()
   local len = dbg.shot_len * (1 - self.ending_perc)
   local x2, y2 = walls.grid_to_virt_pt(self.gx + self.dir[1] * len,
                                        self.gy + self.dir[2] * len)
-  love.graphics.setLineWidth(3)
+  love.graphics.setLineWidth(2)
   love.graphics.setColor({60, 160, 220})
   draw.line(x1, y1, x2, y2)
   love.graphics.setLineWidth(1)

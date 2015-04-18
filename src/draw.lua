@@ -26,6 +26,13 @@ local draw = {}
 
 
 --------------------------------------------------------------------------------
+-- Require modules.
+--------------------------------------------------------------------------------
+
+local dbg = require 'dbg'
+
+
+--------------------------------------------------------------------------------
 -- Parameters.
 --------------------------------------------------------------------------------
 
@@ -57,6 +64,11 @@ local function min(...)
   return val
 end
 
+local function win_size()
+  local win_w, win_h = love.graphics.getDimensions()
+  return win_w, win_h - dbg.status_height
+end
+
 
 --------------------------------------------------------------------------------
 -- General drawing functions.
@@ -71,7 +83,7 @@ function draw.rect(x, y, w, h, color, mode)
   love.graphics.setColor(color)
 
   -- Convert coordinates.
-  local win_w, win_h = love.graphics.getDimensions()
+  local win_w, win_h = win_size()
   -- We invert y here since love.graphics treats the top as y=0,
   -- and we treat the bottom as y=0.
   x, y = (x + 1) * win_w / 2, (1 - y) * win_h / 2
@@ -97,7 +109,7 @@ function draw.rotated_rect(mid_x, mid_y, w, h, color, angle)
   love.graphics.setColor(color)
 
   -- Convert coordinates.
-  local win_w, win_h = love.graphics.getDimensions()
+  local win_w, win_h = win_size()
 
   -- We invert y here since love.graphics treats the top as y=0,
   -- and we treat the bottom as y=0.
@@ -118,7 +130,7 @@ function draw.rotated_rect(mid_x, mid_y, w, h, color, angle)
 end
 
 function draw.str(s, x, y, limit, align)
-  local win_w, win_h = love.graphics.getDimensions()
+  local win_w, win_h = win_size()
   x, y = (x + 1) * win_w / 2, (1 - y) * win_h / 2
   limit = limit * win_w / 2
 
@@ -132,7 +144,7 @@ end
 -- This guarantees that the screen object is a circle.
 -- Returns the effective radii in virtual coords.
 function draw.circle(cx, cy, max_r, segments)
-  local win_w, win_h = love.graphics.getDimensions()
+  local win_w, win_h = win_size()
   cx, cy = (cx + 1) * win_w / 2, (1 - cy) * win_h / 2
   local r_scale = min(win_w / 2, win_h / 2)
   local r = max_r * r_scale
@@ -141,7 +153,7 @@ function draw.circle(cx, cy, max_r, segments)
 end
 
 function draw.line(x1, y1, x2, y2)
-  local win_w, win_h = love.graphics.getDimensions()
+  local win_w, win_h = win_size()
   x1, y1 = (x1 + 1) * win_w / 2, (1 - y1) * win_h / 2
   x2, y2 = (x2 + 1) * win_w / 2, (1 - y2) * win_h / 2
   love.graphics.line(x1, y1, x2, y2)

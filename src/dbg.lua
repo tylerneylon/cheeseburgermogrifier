@@ -20,6 +20,8 @@ dbg.shot_speed  = 5
 
 dbg.baddy_fire_interval = 1
 
+dbg.status_height = 30
+
 -- If dbg.cycles_per_frame = 1, then it's full speed (normal operation), if
 -- it's = 2, then we're at half speed, etc.
 dbg.cycles_per_frame = 1
