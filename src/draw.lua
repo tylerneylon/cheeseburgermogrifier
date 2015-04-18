@@ -45,11 +45,27 @@ draw.yellow  = {210, 150,   0}
 
 
 --------------------------------------------------------------------------------
+-- Utility functions.
+--------------------------------------------------------------------------------
+
+local function min(...)
+  local t = {...}
+  local val = t[1]
+  for i = 2, #t do
+    if t[i] < val then val = t[i] end
+  end
+  return val
+end
+
+
+--------------------------------------------------------------------------------
 -- General drawing functions.
 --------------------------------------------------------------------------------
 
 -- x, y is the lower-left corner of the rectangle.
-function draw.rect(x, y, w, h, color)
+function draw.rect(x, y, w, h, color, mode)
+  mode = mode or 'fill'
+
   -- Set the color.
   color = color or {255, 255, 255}
   love.graphics.setColor(color)
@@ -65,7 +81,7 @@ function draw.rect(x, y, w, h, color)
   y = y - h
 
   -- Draw the rectangle.
-  love.graphics.rectangle('fill', x, y, w, h)
+  love.graphics.rectangle(mode, x, y, w, h)
 end
 
 function draw.rect_w_mid_pt(mid_x, mid_y, w, h, color)
@@ -110,6 +126,56 @@ function draw.str(s, x, y, limit, align)
 
   love.graphics.printf(s, x, y, limit, align)
 end
+
+-- What is a circle in virtual coords could end up as an ellipse on the screen,
+-- so this accepts a max_r which is the max radius in virtual coords.
+-- This guarantees that the screen object is a circle.
+-- Returns the effective radii in virtual coords.
+function draw.circle(cx, cy, max_r, segments)
+  local win_w, win_h = love.graphics.getDimensions()
+  cx, cy = (cx + 1) * win_w / 2, (1 - cy) * win_h / 2
+  local r_scale = min(win_w / 2, win_h / 2)
+  local r = max_r * r_scale
+  love.graphics.circle('line', cx, cy, r, segments)
+  return r / (win_w / 2), r / (win_h / 2)
+end
+
+function draw.line(x1, y1, x2, y2)
+  local win_w, win_h = love.graphics.getDimensions()
+  x1, y1 = (x1 + 1) * win_w / 2, (1 - y1) * win_h / 2
+  x2, y2 = (x2 + 1) * win_w / 2, (1 - y2) * win_h / 2
+  love.graphics.line(x1, y1, x2, y2)
+end
+
+
+--------------------------------------------------------------------------------
+-- LD32 specific functions.
+--------------------------------------------------------------------------------
+
+function draw.hero(x, y, w, h)
+  w = w or 0.15
+  h = h or 0.2
+
+  -- dbg outline
+  --draw.rect(x, y, w, h, draw.white, 'line')
+
+  love.graphics.setColor({255, 255, 255})
+  local r = min(w, h) * 0.15
+  local cx, cy = x + w / 2, y + 0.8 * h
+  local rx, ry = draw.circle(cx, cy, r, 20)
+  local py = y + 0.3 * h
+  draw.line(cx, cy - ry, cx, py)
+
+  -- arm coords
+  local ax1, ax2, ay = x + 0.3 * w, x + 0.7 * w, y + 0.5 * h
+  draw.line(ax1, ay, ax2, ay)
+
+  -- legs
+  local leg_y = y + 0.1 * h
+  draw.line(cx, py, ax1, leg_y)
+  draw.line(cx, py, ax2, leg_y)
+end
+
 
 return draw
 

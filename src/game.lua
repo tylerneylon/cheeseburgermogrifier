@@ -138,7 +138,7 @@ function game.update(dt)
 end
  
 function game.draw()
-  draw.rect(-1, -1, 1, 1, {0, 255, 0})
+  draw.hero(0, 0)
 end
 
 function game.keypressed(key, isrepeat)
