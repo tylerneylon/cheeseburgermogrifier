@@ -16,6 +16,11 @@ dbg.max_health  = 3
 dbg.hero_speed  = 0.05
 dbg.baddy_speed = 1.0
 
+-- These are ratios of the sprite to be used as half-sizes of the bounding box.
+-- To be clear, values = 0.5 would treat the whole sprite as the bounding box.
+dbg.char_bd_w = 0.2
+dbg.char_bd_h = 0.45
+
 dbg.shot_len    = 0.5
 dbg.shot_speed  = 6
 

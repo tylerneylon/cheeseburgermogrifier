@@ -171,9 +171,7 @@ function Baddy:virt_bd_box(gx, gy)
   gx = gx or self.gx
   gy = gy or self.gy
   local x, y = walls.grid_to_virt_pt(gx, gy)
-  -- TODO Avoid defining the magic numbers 0.2/0.45 in more than one place.
-  --      Better yet, name them clearly as well.
-  local rw, rh = self.w * 0.2, self.h * 0.45
+  local rw, rh = self.w * dbg.char_bd_w, self.h * dbg.char_bd_h
   local cx, cy = x + self.w / 2, y + self.h / 2
   return cx, cy, rw, rh
 end
