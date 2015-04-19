@@ -33,7 +33,7 @@ dbg.hero_flyback_speed    = 10
 dbg.hero_is_invincible = true
 
 dbg.baddy_fire_interval = 1
-dbg.hero_fire_interval  = 0.25
+dbg.hero_fire_interval  = 0.2
 
 dbg.status_height = 30
 
