@@ -177,11 +177,18 @@ function Baddy:virt_bd_box(gx, gy)
 end
 
 function Baddy:got_hit_by_blast_going_in_dir(dir)
-  print('Baddy was hit!')
+  self.is_cheeseburger = true
 end
 
 function Baddy:update(dt, hero)
   clock = clock + dt
+
+  for _, shot in pairs(self.shots) do
+    shot:update(dt, hero)
+  end
+
+  -- We stop moving when we're cheeseburgers. Trust me on this one.
+  if self.is_cheeseburger then return end
 
   self.gx = self.gx + dt * self.delta[1] * dbg.baddy_speed
   self.gy = self.gy + dt * self.delta[2] * dbg.baddy_speed
@@ -200,10 +207,6 @@ function Baddy:update(dt, hero)
 
   if dbg.do_draw_vis_lines then
     self.hero = hero
-  end
-
-  for _, shot in pairs(self.shots) do
-    shot:update(dt, hero)
   end
 end
 
