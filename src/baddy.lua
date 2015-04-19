@@ -181,7 +181,11 @@ function Baddy:virt_bd_box(gx, gy)
   gx = gx or self.gx
   gy = gy or self.gy
   local x, y = walls.grid_to_virt_pt(gx, gy)
-  local rw, rh = self.w * dbg.char_bd_w, self.h * dbg.char_bd_h
+  --local rw, rh = self.w * dbg.char_bd_w, self.h * dbg.char_bd_h
+
+  -- We make these biggish since they're used to detect shot collisions, and
+  -- it's frustrating if the bounding box is too small for that case.
+  local rw, rh = self.w / 2, self.h / 2
   local cx, cy = x + self.w / 2, y + self.h / 2
   return cx, cy, rw, rh
 end
