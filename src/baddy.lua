@@ -207,9 +207,11 @@ function Baddy:update(dt, hero)
   end
 
   -- Check to see if we can see the hero.
-  local seen_pt = self:can_see_hero(hero)
-  if seen_pt and self:can_shoot_now() then
-    self:shoot_at(seen_pt)
+  if not hero.dead then
+    local seen_pt = self:can_see_hero(hero)
+    if seen_pt and self:can_shoot_now() then
+      self:shoot_at(seen_pt)
+    end
   end
 
   if dbg.do_draw_vis_lines then

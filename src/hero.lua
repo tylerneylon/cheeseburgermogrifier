@@ -129,8 +129,18 @@ function Hero:virt_bd_box(gx, gy)
   return cx, cy, rw, rh
 end
 
+function Hero:die()
+  self.dead = true
+  self.keys_down = {}
+end
+
 function Hero:got_hit_by_blast_going_in_dir(dir)
   self.health = self.health - 1
+
+  if self.health <= 0 then
+    self:die()
+  end
+
   self.tmp_dir = {
     dir[1] * dbg.hero_flyback_speed,
     dir[2] * dbg.hero_flyback_speed
@@ -212,6 +222,8 @@ function Hero:update(dt, baddies)
 end
 
 function Hero:key_down(key)
+  if self.dead then return end
+
   if key == ' ' and self:can_shoot_now() then
     self:shoot()
   end
