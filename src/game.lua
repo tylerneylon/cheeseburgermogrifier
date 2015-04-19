@@ -29,6 +29,7 @@ local walls       = require 'walls'
 local baddies = {}
 local hero
 local you_died_image
+local you_won_image
 
 -- TEMP normally start with level_num = 0
 local level_num = 0
@@ -119,8 +120,10 @@ function game.update(dt)
   end
 
   -- Update the baddies.
-  for _, baddy in pairs(baddies) do
-    baddy:update(dt, hero)
+  if not game.is_won then
+    for _, baddy in pairs(baddies) do
+      baddy:update(dt, hero)
+    end
   end
 
   -- Update the hero; returns true when the hero reaches the end of the level.
@@ -128,20 +131,33 @@ function game.update(dt)
     local level_intro = require 'level_intro'
     level_intro.show_intro_for_level(level_num + 1)
   end
+
+  if game.villain and game.villain.health == 0 and not game.is_won then
+    game.is_won = true
+    print('game was won!')
+  end
+
 end
  
 function game.draw()
   walls.draw()
+
   for _, baddy in pairs(baddies) do
-    baddy:draw()
+    if not game.is_won or baddy.is_cheeseburger then
+      baddy:draw()
+    end
   end
   hero:draw()
   status.draw(hero)
 
   if hero.dead then
     draw.img_w_mid_pt(you_died_image, 0, 0)
+  else
+    if game.is_won then
+      love.graphics.setColor(draw.white)
+      draw.img_w_mid_pt(you_won_image, 0, 0)
+    end
   end
-
 end
 
 function game.keypressed(key, isrepeat)
@@ -185,6 +201,8 @@ hero = Hero:new(8, 8)
 
 you_died_image = love.graphics.newImage('img/you_died2.png')
 assert(you_died_image)
+you_won_image = love.graphics.newImage('img/you_won.png')
+assert(you_won_image)
 
 
 --------------------------------------------------------------------------------
