@@ -33,7 +33,9 @@ function status.draw(hero)
   local dx, dy = full_heart:getWidth(), full_heart:getHeight()
   love.graphics.setColor({255, 255, 255})
   for i = 1, 3 do
-    love.graphics.draw(full_heart, x, win_h - dy)
+    local img = full_heart
+    if i > hero.health then img = empty_heart end
+    love.graphics.draw(img, x, win_h - dy)
     x = x + dx
   end
 end

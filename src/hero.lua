@@ -17,6 +17,13 @@ local walls    = require 'walls'
 
 
 --------------------------------------------------------------------------------
+-- Internal globals.
+--------------------------------------------------------------------------------
+
+local clock = 0
+
+
+--------------------------------------------------------------------------------
 -- Utility functions.
 --------------------------------------------------------------------------------
 
@@ -36,6 +43,10 @@ local function normalize(v)
   local n = norm(v)
   v[1] = v[1] / n
   v[2] = v[2] / n
+end
+
+local function pr(...)
+  print(string.format(...))
 end
 
 -- Returns the theoretical outcome of moving based on the given keys and the
@@ -99,7 +110,23 @@ function Hero:virt_bd_box(gx, gy)
   return cx, cy, rw, rh
 end
 
+function Hero:got_hit_by_blast_going_in_dir(dir)
+  self.health = self.health - 1
+  self.tmp_dir = {
+    dir[1] * dbg.hero_flyback_speed,
+    dir[2] * dbg.hero_flyback_speed
+  }
+  self.tmp_dir_ends_at = clock + dbg.hero_flyback_interval
+end
+
 function Hero:update(dt)
+
+  clock = clock + dt
+
+  if self.tmp_dir_ends_at and self.tmp_dir_ends_at < clock then
+    self.tmp_dir_ends_at = nil
+    self.tmp_dir = nil
+  end
 
   assert(#self.keys_down <= 2)
 
@@ -110,7 +137,11 @@ function Hero:update(dt)
 
   local cx, cy, rw, rh = self:virt_bd_box()
 
-  local gx, gy = move_for_keys(self.gx, self.gy, self.keys_down)
+  local td = self.tmp_dir or {0, 0}
+  local gx_init = self.gx + td[1] * dt
+  local gy_init = self.gy + td[2] * dt
+
+  local gx, gy = move_for_keys(gx_init, gy_init, self.keys_down)
   local cx, cy = self:virt_bd_box(gx, gy)
   if not walls.hit_test(cx - rw, cy - rh, 2 * rw, 2 * rh) then
     return done(gx, gy)
@@ -118,11 +149,17 @@ function Hero:update(dt)
 
   for key in pairs(self.keys_down) do
     local k = {[key] = true}
-    local gx, gy = move_for_keys(self.gx, self.gy, k)
+    local gx, gy = move_for_keys(gx_init, gy_init, k)
     local cx, cy = self:virt_bd_box(gx, gy)
     if not walls.hit_test(cx - rw, cy - rh, 2 * rw, 2 * rh) then
       return done(gx, gy)
     end
+  end
+
+  -- Try just moving to gx_init, gy_init.
+  local cx, cy = self:virt_bd_box(gx_init, gy_init)
+  if not walls.hit_test(cx - rw, cy - rh, 2 * rw, 2 * rh) then
+    return done(gx_init, gy_init)
   end
 end
 

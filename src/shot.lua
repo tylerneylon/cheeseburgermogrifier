@@ -101,6 +101,8 @@ function Shot:draw()
 end
 
 function Shot:update(dt, hero)
+  if self.done then return end
+
   self.gx = self.gx + dt * self.dir[1] * dbg.shot_speed
   self.gy = self.gy + dt * self.dir[2] * dbg.shot_speed
 
@@ -113,6 +115,8 @@ function Shot:update(dt, hero)
   if math.abs(cx - end_pt[1]) < rw and
      math.abs(cy - end_pt[2]) < rh then
     -- There hero was hit!
+    hero:got_hit_by_blast_going_in_dir(self.dir)
+    self.done = true
   end
 
   if self.hit_pt then

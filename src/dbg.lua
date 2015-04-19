@@ -19,6 +19,9 @@ dbg.baddy_speed = 1.0
 dbg.shot_len    = 0.5
 dbg.shot_speed  = 6
 
+dbg.hero_flyback_interval = 0.08
+dbg.hero_flyback_speed    = 10
+
 dbg.baddy_fire_interval = 1
 
 dbg.status_height = 30
@@ -26,7 +29,7 @@ dbg.status_height = 30
 dbg.do_draw_bounds    = true
 dbg.do_draw_vis_lines = true
 
-local production = false
+local production = true
 if production then
   dbg.do_draw_bounds    = false
   dbg.do_draw_vis_lines = false
