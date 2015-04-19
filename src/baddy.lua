@@ -19,6 +19,7 @@ local dbg      = require 'dbg'
 local draw     = require 'draw'
 local Hero     = require 'hero'
 local Shot     = require 'shot'
+local sounds   = require 'sounds'
 local walls    = require 'walls'
 
 
@@ -29,6 +30,7 @@ local walls    = require 'walls'
 local clock = 0
 local shot_color = {200, 90, 90}
 local cheeseburger_image
+local num_cb_so_far = 0
 
 
 --------------------------------------------------------------------------------
@@ -172,6 +174,7 @@ function Baddy:can_shoot_now()
 end
 
 function Baddy:shoot_at(dest)
+  sounds.shoot:play()
   local g_pt = { self.gx + 0.5 * self.gw, self.gy + 0.5 * self.gh }
   local dir = { dest[1] - g_pt[1], dest[2] - g_pt[2] }
   normalize(dir)
@@ -203,7 +206,11 @@ function Baddy:got_hit_by_blast_going_in_dir(dir)
     end
   end
   if not self.is_villain or self.health <= 0 then
+    if num_cb_so_far == 0 then
+      sounds.dialog2:play()
+    end
     self.is_cheeseburger = true
+    num_cb_so_far = num_cb_so_far + 1
   end
 end
 

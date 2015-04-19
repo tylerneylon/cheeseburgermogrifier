@@ -154,6 +154,8 @@ function Hero:die()
 end
 
 function Hero:got_hit_by_blast_going_in_dir(dir)
+  sounds.hero_hit:play()
+
   if not dbg.hero_is_invincible then
     self.health = self.health - 1
   end
@@ -185,6 +187,7 @@ function Hero:shoot()
 end
 
 function Hero:eat(cheeseburger)
+  sounds.tasty:play()
   self.health = min(self.health + 1, dbg.max_health)
   cheeseburger.eaten = true
 end

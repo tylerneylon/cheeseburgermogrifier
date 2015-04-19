@@ -39,7 +39,7 @@ dbg.hero_fire_interval  = 0.2
 dbg.status_height = 30
 
 -- TEMP 1.5 usually
-dbg.level_intro_interval = 0.2
+dbg.level_intro_interval = 1.5
 
 dbg.do_draw_bounds    = true
 dbg.do_draw_vis_lines = true

@@ -18,6 +18,7 @@ local dbg         = require 'dbg'
 local draw        = require 'draw'
 local events      = require 'events'
 local Hero        = require 'hero'
+local sounds      = require 'sounds'
 local status      = require 'status'
 local walls       = require 'walls'
 
@@ -171,6 +172,12 @@ end
 function game.next_level()
   clock = 0  -- Restart the clock so last-level baddies don't spawn instantly.
   level_num = level_num + 1
+
+  if level_num == 1 then
+    -- We just started playing.
+    sounds.dialog1:play()
+  end
+
   walls.load_level(level_num)
   baddies = walls.new_baddies_for_level(level_num)
   -- Give the status module a way to see how much health the villain has.
