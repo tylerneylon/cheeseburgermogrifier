@@ -197,9 +197,8 @@ function game.next_level()
   hero.gx, hero.gy = walls.get_hero_start_pos_for_level(level_num)
   hero.keys_down = {}
 
-  pr('Just set hero grid pos to %d, %d', hero.gx, hero.gy)
-
-  pr('#baddies = %d', #baddies)
+  --pr('Just set hero grid pos to %d, %d', hero.gx, hero.gy)
+  --pr('#baddies = %d', #baddies)
 end
 
 function game.take_over_and_next_level()

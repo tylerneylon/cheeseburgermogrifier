@@ -12,8 +12,10 @@ require 'strict'  -- Enforce careful global variable usage.
 
 local dbg = {}
 
-dbg.max_health  = 3
-dbg.hero_speed  = 0.05
+-- TEMP usually 3
+dbg.max_health  = 10
+
+dbg.hero_speed  = 0.05  -- usually 0.05
 dbg.baddy_speed = 1.0
 
 -- These are ratios of the sprite to be used as half-sizes of the bounding box.

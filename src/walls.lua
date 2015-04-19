@@ -179,11 +179,17 @@ local levels = {
 -- Each baddy datum starts with the level number, then their initial point;
 -- after that is a sequence of pace points.
 local baddy_data = {
-  -- Level 1.
+  -- Level 0.
   -- (none)
 
+  -- Level 1.
+  { 1, {8, 5}, {7, 5}, {10, 5} },
+
   -- Level 2.
-  { 2, {8, 5}, {7, 5}, {10, 5} }
+  { 2, {5, 4}, {6, 4}, {5, 4} },
+
+  -- Level 3.
+  { 3, {3, 6}, {3, 8}, {5, 8}, {5, 4}, {3, 4} }
 }
 
 -- The grid point where the hero starts in each level.
@@ -260,13 +266,14 @@ end
 
 -- First pair is floating pt, second pair is an integer corner.
 local function grid_pt_hits_door(gx, gy, crnr_x, crnr_y)
+  --pr('grid_pt_hits_door: grid_pt=(%g, %g) corner=(%g, %g)', gx, gy, crnr_x, crnr_y)
   gx, gy = gx + dbg.char_bd_w, gy + dbg.char_bd_h
   local cx, cy = crnr_x + 0.5, crnr_y + 0.5
-  local door_extra = 0.2
+  local door_extra = 0.4
   local w = dbg.char_bd_w + 0.5 + door_extra
   local h = dbg.char_bd_h + 0.5 + door_extra
-  return math.abs(cx - gx) < w and
-         math.abs(cy - gy) < h
+  return math.abs(cx - gx) <= w and
+         math.abs(cy - gy) <= h
 end
 
 
@@ -337,6 +344,7 @@ function walls.hit_test(x, y, w, h)
 end
 
 function walls.does_hit_door(gx, gy)
+  --pr('does_hit_door(%g, %g)', gx, gy)
   local corner_x, corner_y = math.floor(gx) - 1, math.floor(gy) - 1
   for x = corner_x, corner_x + 2 do
     for y = corner_y, corner_y + 2 do
@@ -466,8 +474,8 @@ function walls.new_baddies_for_level(level_num)
   local Baddy = require 'baddy'
   local baddies = {}
   for _, baddy_info in pairs(baddy_data) do
-    if baddy_info[1] == level_num then
-      pr('adding a baddy')
+    if baddy_info[1] == level_num - 1 then
+      --pr('adding a baddy')
       local init_pt = baddy_info[2]
       local b = Baddy:new(init_pt[1], init_pt[2])
       for i = 3, #baddy_info do
@@ -485,7 +493,7 @@ function walls.load_level(level_num)
 end
 
 function walls.get_hero_start_pos_for_level(level_num)
-  pr('get_hero_start_pos_for_level(%d)', level_num)
+  --pr('get_hero_start_pos_for_level(%d)', level_num)
   return unpack(hero_start[level_num])
 end
 
