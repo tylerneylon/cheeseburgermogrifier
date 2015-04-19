@@ -154,6 +154,7 @@ function game.keyreleased(key)
 end
 
 function game.next_level()
+  clock = 0  -- Restart the clock so last-level baddies don't spawn instantly.
   level_num = level_num + 1
   walls.load_level(level_num)
   baddies = walls.new_baddies_for_level(level_num)

@@ -197,6 +197,10 @@ end
 function Baddy:got_hit_by_blast_going_in_dir(dir)
   if self.is_villain then
     self.health = self.health - 1
+    if self.health < 0 then self.health = 0 end
+    if self.health == 0 then
+      self.is_cheeseburger = true
+    end
   end
   if not self.is_villain or self.health <= 0 then
     self.is_cheeseburger = true
