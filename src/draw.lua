@@ -127,6 +127,13 @@ function draw.img(img, x, y, w, h)
   love.graphics.draw(img, x, y)
 end
 
+function draw.img_w_mid_pt(img, cx, cy, w, h)
+  local win_w, win_h = win_size()
+  if not w then w = 2 * img:getWidth()  / win_w end
+  if not h then h = 2 * img:getHeight() / win_h end
+  draw.img(img, cx - w / 2, cy - h / 2, w, h)
+end
+
 function draw.rect_w_mid_pt(mid_x, mid_y, w, h, color, mode)
   -- Set (x, y) to the lower-left corner of the rectangle.
   local x = mid_x - w / 2

@@ -28,6 +28,7 @@ local walls    = require 'walls'
 
 local baddies        = {}
 local hero
+local you_died_image
 
 
 --------------------------------------------------------------------------------
@@ -165,6 +166,11 @@ function game.draw()
   end
   hero:draw()
   status.draw(hero)
+
+  if hero.dead then
+    draw.img_w_mid_pt(you_died_image, 0, 0)
+  end
+
 end
 
 function game.keypressed(key, isrepeat)
@@ -187,6 +193,9 @@ b:add_pace_pt(10, 5)
 table.insert(baddies, b)
 
 hero = Hero:new(8, 8)
+
+you_died_image = love.graphics.newImage('img/you_died2.png')
+assert(you_died_image)
 
 
 --------------------------------------------------------------------------------
