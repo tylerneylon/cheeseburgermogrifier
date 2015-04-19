@@ -136,6 +136,13 @@ function Hero:got_hit_by_blast_going_in_dir(dir)
   self.tmp_dir_ends_at = clock + dbg.hero_flyback_interval
 end
 
+function Hero:can_shoot_now()
+  if self.last_fired_at == nil then return true end
+
+  local time_since_last_shot = clock - self.last_fired_at
+  return time_since_last_shot > dbg.hero_fire_interval
+end
+
 function Hero:shoot()
   local g_pt = { self.gx + 0.5 * self.gw,
                  self.gy + 0.5 * self.gh }
@@ -203,8 +210,7 @@ function Hero:update(dt)
 end
 
 function Hero:key_down(key)
-  -- TODO Don't let them shoot too rapidly.
-  if key == ' ' then
+  if key == ' ' and self:can_shoot_now() then
     self:shoot()
   end
 

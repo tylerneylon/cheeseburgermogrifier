@@ -23,6 +23,7 @@ dbg.hero_flyback_interval = 0.08
 dbg.hero_flyback_speed    = 10
 
 dbg.baddy_fire_interval = 1
+dbg.hero_fire_interval  = 0.25
 
 dbg.status_height = 30
 
