@@ -538,7 +538,8 @@ function walls.new_baddies_for_level(level_num)
     if baddy_info[1] == level_num - 1 then
       --pr('adding a baddy')
       local init_pt = baddy_info[2]
-      local b = Baddy:new(init_pt[1], init_pt[2])
+      local is_villain = (baddy_info[1] == 8)
+      local b = Baddy:new(init_pt[1], init_pt[2], is_villain)
       for i = 3, #baddy_info do
         b:add_pace_pt(baddy_info[i][1], baddy_info[i][2])
       end

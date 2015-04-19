@@ -39,6 +39,22 @@ function status.draw(hero)
     love.graphics.draw(img, x, win_h - dy)
     x = x + dx
   end
+
+  local game = require 'game'
+  if game.villain then
+    -- Draw the enemy health.
+    love.graphics.setColor(draw.white)
+    x = x + 150
+    love.graphics.printf('enemy', x, win_h - dy * 0.7 , 100)
+    x = x + 50
+    local h = 20
+    -- Draw the health outline.
+    love.graphics.rectangle('line', x, win_h - 25, 400, h)
+    -- Draw the health bar itself.
+    love.graphics.setColor({255, 0, 0})
+    local w = 390 * (game.villain.health / dbg.villain_max_health)
+    love.graphics.rectangle('fill', x + 5, win_h - 20, w, h - 10)
+  end
 end
 
 

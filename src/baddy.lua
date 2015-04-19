@@ -62,12 +62,16 @@ local Baddy = {w = 0.05, h = 0.4, delta = {0, 0}}
 
 -- This accepts and thinks mostly in terms of
 -- grid coords.
-function Baddy:new(gx, gy)
+function Baddy:new(gx, gy, is_villain)
   local b = { gx = gx, gy = gy }
   b.w,  b.h  = walls.sprite_size()
   b.gw, b.gh = walls.grid_sprite_size()
   b.shots = {}
   b.is_baddy = true
+  if is_villain then
+    b.is_villain = true
+    b.health = dbg.villain_max_health
+  end
   return setmetatable(b, {__index = self})
 end
 
@@ -191,7 +195,12 @@ function Baddy:virt_bd_box(gx, gy)
 end
 
 function Baddy:got_hit_by_blast_going_in_dir(dir)
-  self.is_cheeseburger = true
+  if self.is_villain then
+    self.health = self.health - 1
+  end
+  if not self.is_villain or self.health <= 0 then
+    self.is_cheeseburger = true
+  end
 end
 
 function Baddy:update(dt, hero)

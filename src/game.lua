@@ -29,6 +29,8 @@ local walls       = require 'walls'
 local baddies = {}
 local hero
 local you_died_image
+
+-- normally start with level_num = 0
 local level_num = 0
 
 
@@ -194,6 +196,10 @@ function game.next_level()
   level_num = level_num + 1
   walls.load_level(level_num)
   baddies = walls.new_baddies_for_level(level_num)
+  -- Give the status module a way to see how much health the villain has.
+  if #baddies > 0 and baddies[1].is_villain then
+    game.villain = baddies[1]
+  end
   hero.gx, hero.gy = walls.get_hero_start_pos_for_level(level_num)
   hero.keys_down = {}
 

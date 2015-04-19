@@ -14,6 +14,7 @@ local dbg = {}
 
 -- TEMP usually 3
 dbg.max_health  = 10
+dbg.villain_max_health = 6
 
 dbg.hero_speed  = 0.1  -- TEMP usually 0.05
 dbg.baddy_speed = 2.0  -- TEMP usually 1.0
