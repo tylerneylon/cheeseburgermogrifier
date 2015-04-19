@@ -198,6 +198,8 @@ function Baddy:virt_bd_box(gx, gy)
 end
 
 function Baddy:got_hit_by_blast_going_in_dir(dir)
+  sounds.guard_hit:play()
+
   if self.is_villain then
     self.health = self.health - 1
     if self.health < 0 then self.health = 0 end

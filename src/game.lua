@@ -136,6 +136,7 @@ function game.update(dt)
   if game.villain and game.villain.health == 0 and not game.is_won then
     -- Put any one-time game-won actions here.
     game.is_won = true
+    sounds.woohoo:play()
   end
 end
  
@@ -176,6 +177,11 @@ function game.next_level()
   if level_num == 1 then
     -- We just started playing.
     sounds.dialog1:play()
+  end
+
+  if level_num == 9 then
+    -- We just hit the last level.
+    sounds.villain:play()
   end
 
   walls.load_level(level_num)
