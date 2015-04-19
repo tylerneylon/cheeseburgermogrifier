@@ -186,7 +186,7 @@ function Baddy:update(dt, hero)
   end
 
   for _, shot in pairs(self.shots) do
-    shot:update(dt)
+    shot:update(dt, hero)
   end
 end
 

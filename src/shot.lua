@@ -100,9 +100,20 @@ function Shot:draw()
   end
 end
 
-function Shot:update(dt)
+function Shot:update(dt, hero)
   self.gx = self.gx + dt * self.dir[1] * dbg.shot_speed
   self.gy = self.gy + dt * self.dir[2] * dbg.shot_speed
+
+  local end_grid_pt = {
+    self.gx + self.dir[1] * dbg.shot_len,
+    self.gy + self.dir[2] * dbg.shot_len
+  }
+  local end_pt = walls.grid_to_virt_pt(end_grid_pt)
+  local cx, cy, rw, rh = hero:virt_bd_box()
+  if math.abs(cx - end_pt[1]) < rw and
+     math.abs(cy - end_pt[2]) < rh then
+    -- There hero was hit!
+  end
 
   if self.hit_pt then
     local delta = { self.hit_pt[1] - self.gx, self.hit_pt[2] - self.gy }

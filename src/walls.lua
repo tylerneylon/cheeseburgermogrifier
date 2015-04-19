@@ -167,10 +167,19 @@ function walls.grid_sprite_size()
   return sprite_scale, sprite_scale
 end
 
+-- This accepts either a single table or two numbers.
 function walls.grid_to_virt_pt(gx, gy)
-  local vx = 2 * (gx - 1) / g.w - 1
-  local vy = 2 * (gy - 1) / g.h - 1
-  return vx, vy
+  if gy == nil then
+    local pt = gx
+    return {
+      2 * (pt[1] - 1) / g.w - 1,
+      2 * (pt[2] - 1) / g.h - 1
+    }
+  else
+    local vx = 2 * (gx - 1) / g.w - 1
+    local vy = 2 * (gy - 1) / g.h - 1
+    return vx, vy
+  end
 end
 
 -- Supporting function for grid_pts_can_see_each_other.
