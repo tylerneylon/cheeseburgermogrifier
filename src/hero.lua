@@ -13,6 +13,7 @@ require 'strict'  -- Enforce careful global variable usage.
 
 local dbg      = require 'dbg'
 local draw     = require 'draw'
+local Shot     = require 'shot'
 local walls    = require 'walls'
 
 
@@ -86,6 +87,7 @@ function Hero:new(gx, gy)
   h.gw, h.gh = walls.grid_sprite_size()
   h.health = dbg.max_health
   h.last_move_dir = {1, 0}
+  h.shots = {}
   return setmetatable(h, {__index = self})
 end
 
@@ -104,6 +106,13 @@ function Hero:draw()
     local x1, y1 = x + w / 2, y + h / 2
     local x2, y2 = x1 + dir[1] * 0.2, y1 + dir[2] * 0.2
     draw.line(x1, y1, x2, y2)
+  end
+
+  for i = #self.shots, 1, -1 do
+    self.shots[i]:draw()
+    if self.shots[i].done then
+      table.remove(self.shots, i)
+    end
   end
 end
 
@@ -127,9 +136,20 @@ function Hero:got_hit_by_blast_going_in_dir(dir)
   self.tmp_dir_ends_at = clock + dbg.hero_flyback_interval
 end
 
+function Hero:shoot()
+  local g_pt = { self.gx + 0.5 * self.gw,
+                 self.gy + 0.5 * self.gh }
+  table.insert(self.shots, Shot:new(g_pt, self.last_move_dir))
+  self.last_fired_at = clock
+end
+
 function Hero:update(dt)
 
   clock = clock + dt
+
+  for _, shot in pairs(self.shots) do
+    shot:update(dt)
+  end
 
   if self.tmp_dir_ends_at and self.tmp_dir_ends_at < clock then
     self.tmp_dir_ends_at = nil
@@ -183,6 +203,11 @@ function Hero:update(dt)
 end
 
 function Hero:key_down(key)
+  -- TODO Don't let them shoot too rapidly.
+  if key == ' ' then
+    self:shoot()
+  end
+
   local keys_to_track = {
     up    = true,
     down  = true,
