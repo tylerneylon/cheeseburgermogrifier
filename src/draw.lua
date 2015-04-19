@@ -69,6 +69,10 @@ local function win_size()
   return win_w, win_h - dbg.status_height
 end
 
+local function pr(...)
+  print(string.format(...))
+end
+
 
 --------------------------------------------------------------------------------
 -- General drawing functions.
@@ -94,6 +98,33 @@ function draw.rect(x, y, w, h, color, mode)
 
   -- Draw the rectangle.
   love.graphics.rectangle(mode, x, y, w, h)
+end
+
+function draw.img(img, x, y, w, h)
+
+  -- Convert coordinates.
+  local win_w, win_h = win_size()
+  -- We invert y here since love.graphics treats the top as y=0,
+  -- and we treat the bottom as y=0.
+  x, y = (x + 1) * win_w / 2, (1 - y) * win_h / 2
+
+  if w then
+    w = w * win_w / 2
+  else
+    w = img:getWidth()
+  end
+
+  if h then
+    h = h * win_h / 2
+  else
+    h = img:getHeight()
+  end
+
+  -- Shift y since love.graphics draws from the upper-left corner.
+  y = y - h
+
+  -- Draw the rectangle.
+  love.graphics.draw(img, x, y)
 end
 
 function draw.rect_w_mid_pt(mid_x, mid_y, w, h, color, mode)

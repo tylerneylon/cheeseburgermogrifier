@@ -28,6 +28,7 @@ local walls    = require 'walls'
 
 local clock = 0
 local shot_color = {200, 90, 90}
+local cheeseburger_image
 
 
 --------------------------------------------------------------------------------
@@ -108,6 +109,12 @@ end
 function Baddy:draw()
   local x, y = walls.grid_to_virt_pt(self.gx, self.gy)
   local w, h = self.w, self.h
+
+  if self.is_cheeseburger then
+    draw.img(cheeseburger_image, x, y, w, h)
+    return
+  end
+
   draw.hero(x, y, w, h, 'bad')
 
   if self.hero and dbg.do_draw_vis_lines then
@@ -209,6 +216,13 @@ function Baddy:update(dt, hero)
     self.hero = hero
   end
 end
+
+
+--------------------------------------------------------------------------------
+-- Initialization.
+--------------------------------------------------------------------------------
+
+cheeseburger_image = love.graphics.newImage('img/cheeseburger.png')
 
 
 --------------------------------------------------------------------------------
