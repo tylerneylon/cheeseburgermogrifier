@@ -200,6 +200,7 @@ function Hero:check_for_cheeseburgers(baddies)
   end
 end
 
+-- This returns true iff we need to go to the next level.
 function Hero:update(dt, baddies)
 
   clock = clock + dt
@@ -229,10 +230,9 @@ function Hero:update(dt, baddies)
     self:check_for_cheeseburgers(baddies)
 
     if walls.does_hit_door(self.gx, self.gy) then
-      -- TODO React to hitting the door.
-      print('hit a door!')
+      return true
     end
-
+    return false
   end
 
   local cx, cy, rw, rh = self:virt_bd_box()
@@ -263,7 +263,7 @@ function Hero:update(dt, baddies)
   end
 
   -- If even that fails, stick with the original position.
-  done(self.gx, self.gy)
+  return done(self.gx, self.gy)
 end
 
 function Hero:key_down(key)

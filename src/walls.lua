@@ -215,8 +215,10 @@ function walls.does_hit_door(gx, gy)
   local corner_x, corner_y = math.floor(gx) - 1, math.floor(gy) - 1
   for x = corner_x, corner_x + 2 do
     for y = corner_y, corner_y + 2 do
-      if grid_type_is_door(g[x][y]) and grid_pt_hits_door(gx, gy, x, y) then
-        return true
+      if g[x] and g[x][y] then  -- x or y may be out of range.
+        if grid_type_is_door(g[x][y]) and grid_pt_hits_door(gx, gy, x, y) then
+          return true
+        end
       end
     end
   end
@@ -336,17 +338,25 @@ function walls.grid_pts_can_see_each_other(pt1, pt2)
 end
 
 function walls.new_baddies_for_level(level_num)
+  local Baddy = require 'baddy'
   local baddies = {}
   for _, baddy_info in pairs(baddy_data) do
     if baddy_info[1] == level_num then
+      pr('adding a baddy')
       local init_pt = baddy_info[2]
       local b = Baddy:new(init_pt[1], init_pt[2])
       for i = 3, #baddy_info do
         b:add_pace_pt(baddy_info[i][1], baddy_info[i][2])
       end
+      table.insert(baddies, b)
     end
   end
   return baddies
+end
+
+function walls.load_level(level_num)
+  level = levels[level_num]
+  g = get_wall_grid()
 end
 
 

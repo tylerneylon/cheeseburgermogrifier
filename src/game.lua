@@ -26,14 +26,19 @@ local walls    = require 'walls'
 -- Internal globals.
 --------------------------------------------------------------------------------
 
-local baddies        = {}
+local baddies = {}
 local hero
 local you_died_image
+local level_num = 1
 
 
 --------------------------------------------------------------------------------
 -- Internal functions.
 --------------------------------------------------------------------------------
+
+local function pr(...)
+  print(string.format(...))
+end
 
 local function setup_grid_map_of_len(len)
   -- This is a linear-time Fisher-Yates shuffle.
@@ -155,8 +160,10 @@ function game.update(dt)
     baddy:update(dt, hero)
   end
 
-  -- Update the hero.
-  hero:update(dt, baddies)
+  -- Update the hero; returns true when the hero reaches the end of the level.
+  if hero:update(dt, baddies) then
+    game.next_level()
+  end
 end
  
 function game.draw()
@@ -180,6 +187,14 @@ end
 
 function game.keyreleased(key)
   hero:key_up(key)
+end
+
+function game.next_level()
+  level_num = level_num + 1
+  walls.load_level(level_num)
+  baddies = walls.new_baddies_for_level(level_num)
+
+  pr('#baddies = %d', #baddies)
 end
 
 
