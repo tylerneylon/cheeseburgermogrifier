@@ -194,6 +194,10 @@ function game.next_level()
   level_num = level_num + 1
   walls.load_level(level_num)
   baddies = walls.new_baddies_for_level(level_num)
+  hero.gx, hero.gy = walls.get_hero_start_pos_for_level(level_num)
+  hero.keys_down = {}
+
+  pr('Just set hero grid pos to %d, %d', hero.gx, hero.gy)
 
   pr('#baddies = %d', #baddies)
 end

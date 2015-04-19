@@ -31,7 +31,7 @@ local sprite_scale = 0.85
 --------------------------------------------------------------------------------
 
 local levels = {
-  -- Level 1.
+  -- Level 0.
 [[
 11111111111111
 1           11
@@ -47,21 +47,37 @@ local levels = {
 11111111111111
 ]],
 
+  -- Level 1.
+[[
+11111111111111
+11           1
+11           1
+3            1
+11           1
+11           1
+11   111111111
+11           2
+11   111111111
+11           1
+11           1
+11111111111111
+]],
+
   -- Level 2.
 [[
 11111111111111
-1            1
-1            1
-1            1
-1            1
-1            1
-1     11111111
-1            1
-1     11111111
-1            1
-1            1
+11           1
+11 1111 1111 1
+11    1 12   1
+11 1111 1111 1
+11    1 1    1
+11    1 1    1
+3  1111 1111 1
+11    1 1    1
+11 1111 1111 1
+11           1
 11111111111111
-]]
+]],
 }
 
 -- Each baddy datum starts with the level number, then their initial point;
@@ -72,6 +88,13 @@ local baddy_data = {
 
   -- Level 2.
   { 2, {8, 5}, {7, 5}, {10, 5} }
+}
+
+-- The grid point where the hero starts in each level.
+local hero_start = {
+  { 8, 8 },  -- Level 0.
+  { 2, 9 },
+  { 2, 5 }
 }
 
 local level = levels[1]
@@ -357,6 +380,11 @@ end
 function walls.load_level(level_num)
   level = levels[level_num]
   g = get_wall_grid()
+end
+
+function walls.get_hero_start_pos_for_level(level_num)
+  pr('get_hero_start_pos_for_level(%d)', level_num)
+  return unpack(hero_start[level_num])
 end
 
 
