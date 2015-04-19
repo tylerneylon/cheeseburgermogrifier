@@ -32,6 +32,8 @@ dbg.hero_fire_interval  = 0.25
 
 dbg.status_height = 30
 
+dbg.level_intro_interval = 1.5
+
 dbg.do_draw_bounds    = true
 dbg.do_draw_vis_lines = true
 dbg.do_draw_shoot_dir = true

@@ -12,14 +12,14 @@ local game = {}
 -- Require modules.
 --------------------------------------------------------------------------------
 
-local anim     = require 'anim'
-local Baddy    = require 'baddy'
-local dbg      = require 'dbg'
-local draw     = require 'draw'
-local events   = require 'events'
-local Hero     = require 'hero'
-local status   = require 'status'
-local walls    = require 'walls'
+local anim        = require 'anim'
+local Baddy       = require 'baddy'
+local dbg         = require 'dbg'
+local draw        = require 'draw'
+local events      = require 'events'
+local Hero        = require 'hero'
+local status      = require 'status'
+local walls       = require 'walls'
 
 
 --------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ local walls    = require 'walls'
 local baddies = {}
 local hero
 local you_died_image
-local level_num = 1
+local level_num = 0
 
 
 --------------------------------------------------------------------------------
@@ -162,7 +162,8 @@ function game.update(dt)
 
   -- Update the hero; returns true when the hero reaches the end of the level.
   if hero:update(dt, baddies) then
-    game.next_level()
+    local level_intro = require 'level_intro'
+    level_intro.show_intro_for_level(level_num + 1)
   end
 end
  
@@ -195,6 +196,11 @@ function game.next_level()
   baddies = walls.new_baddies_for_level(level_num)
 
   pr('#baddies = %d', #baddies)
+end
+
+function game.take_over_and_next_level()
+  love.give_control_to(game)
+  game.next_level()
 end
 
 

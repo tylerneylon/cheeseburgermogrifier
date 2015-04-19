@@ -10,10 +10,10 @@ require 'strict'  -- Enforce careful global variable usage.
 -- Require modules.
 --------------------------------------------------------------------------------
 
-local anim   = require 'anim'
-local dbg    = require 'dbg'
-local events = require 'events'
-local game   = require 'game'
+local anim        = require 'anim'
+local dbg         = require 'dbg'
+local events      = require 'events'
+local level_intro = require 'level_intro'
 
 
 --------------------------------------------------------------------------------
@@ -30,7 +30,7 @@ function love.give_control_to(mode)
 end
 
 function love.load()
-  love.give_control_to(game)
+  level_intro.show_intro_for_level(1)
 end
 
 function love.update(dt)
