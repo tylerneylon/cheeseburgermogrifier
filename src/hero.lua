@@ -153,7 +153,9 @@ function Hero:die()
 end
 
 function Hero:got_hit_by_blast_going_in_dir(dir)
-  self.health = self.health - 1
+  if not dbg.hero_is_invincible then
+    self.health = self.health - 1
+  end
 
   if self.health <= 0 then
     self:die()

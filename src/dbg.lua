@@ -29,6 +29,9 @@ dbg.shot_speed  = 6
 dbg.hero_flyback_interval = 0.08
 dbg.hero_flyback_speed    = 10
 
+-- TEMP usually false
+dbg.hero_is_invincible = true
+
 dbg.baddy_fire_interval = 1
 dbg.hero_fire_interval  = 0.25
 
