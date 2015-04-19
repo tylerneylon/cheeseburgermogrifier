@@ -23,6 +23,9 @@ dbg.baddy_fire_interval = 1
 
 dbg.status_height = 30
 
+dbg.do_draw_bounds    = true
+dbg.do_draw_vis_lines = true
+
 -- If dbg.cycles_per_frame = 1, then it's full speed (normal operation), if
 -- it's = 2, then we're at half speed, etc.
 dbg.cycles_per_frame = 1

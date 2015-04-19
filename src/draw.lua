@@ -169,7 +169,9 @@ function draw.hero(x, y, w, h, label)
   h = h or 0.2
 
   -- dbg outline
-  draw.rect(x, y, w, h, draw.white, 'line')
+  if dbg.do_draw_bounds then
+    draw.rect(x, y, w, h, draw.white, 'line')
+  end
 
   love.graphics.setColor({255, 255, 255})
   local r = min(w, h) * 0.15

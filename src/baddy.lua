@@ -71,6 +71,7 @@ end
 -- This returns either false (if we can't see the hero) or
 -- the point, in grid coords, that can be seen.
 function Baddy:can_see_hero(hero, do_draw)
+  do_draw = do_draw and dbg.do_draw_vis_lines
   assert(hero)
   local see_x = hero.gx + hero.gw / 2
   local see_pts = {
@@ -107,8 +108,7 @@ function Baddy:draw()
   local w, h = self.w, self.h
   draw.hero(x, y, w, h, 'bad')
 
-  -- TODO TEMP DEBUG
-  if self.hero then
+  if self.hero and dbg.do_draw_vis_lines then
     self:can_see_hero(self.hero, true)
   end
 
@@ -181,8 +181,9 @@ function Baddy:update(dt, hero)
     self:shoot_at(seen_pt)
   end
 
-  -- TEMP
-  self.hero = hero
+  if dbg.do_draw_vis_lines then
+    self.hero = hero
+  end
 
   for _, shot in pairs(self.shots) do
     shot:update(dt)
