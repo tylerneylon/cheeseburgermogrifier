@@ -23,6 +23,7 @@ local walls    = require 'walls'
 
 local clock = 0
 local shot_color = {60, 160, 220}
+local dead_sprite
 
 
 --------------------------------------------------------------------------------
@@ -94,8 +95,22 @@ function Hero:new(gx, gy)
 end
 
 function Hero:draw()
+  for i = #self.shots, 1, -1 do
+    self.shots[i]:draw()
+    if self.shots[i].done then
+      table.remove(self.shots, i)
+    end
+  end
+
   local x, y = walls.grid_to_virt_pt(self.gx, self.gy)
   local w, h = self.w, self.h
+
+  if self.dead then
+    love.graphics.setColor(draw.white)
+    draw.img(dead_sprite, x, y, w, h)
+    return
+  end
+
   draw.hero(x, y, w, h, 'good')
 
   if dbg.do_draw_bounds then
@@ -110,12 +125,6 @@ function Hero:draw()
     draw.line(x1, y1, x2, y2)
   end
 
-  for i = #self.shots, 1, -1 do
-    self.shots[i]:draw()
-    if self.shots[i].done then
-      table.remove(self.shots, i)
-    end
-  end
 end
 
 -- This returns cx, cy, rw, rh, which means the center point and the
@@ -241,6 +250,13 @@ end
 function Hero:key_up(key)
   self.keys_down[key] = nil
 end
+
+
+--------------------------------------------------------------------------------
+-- Initialization.
+--------------------------------------------------------------------------------
+
+dead_sprite = love.graphics.newImage('img/dead_sprite2.png')
 
 
 --------------------------------------------------------------------------------
