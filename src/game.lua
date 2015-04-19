@@ -187,10 +187,7 @@ end
 -- Initialization.
 --------------------------------------------------------------------------------
 
-local b = Baddy:new(8, 5)
-b:add_pace_pt( 7, 5)
-b:add_pace_pt(10, 5)
-table.insert(baddies, b)
+baddies = walls.new_baddies_for_level(1)
 
 hero = Hero:new(8, 8)
 

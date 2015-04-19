@@ -31,11 +31,9 @@ local sprite_scale = 0.85
 --------------------------------------------------------------------------------
 
 local levels = {
+  -- Level 1.
 [[
 11111111111111
-1            1
-1            1
-1            1
 1            1
 1            1
 1            2
@@ -43,9 +41,13 @@ local levels = {
 1            1
 1            1
 1            1
+1            1
+1            1
+1            1
 11111111111111
 ]],
 
+  -- Level 2.
 [[
 11111111111111
 1            1
@@ -60,6 +62,16 @@ local levels = {
 1            1
 11111111111111
 ]]
+}
+
+-- Each baddy datum starts with the level number, then their initial point;
+-- after that is a sequence of pace points.
+local baddy_data = {
+  -- Level 1.
+  -- (none)
+
+  -- Level 2.
+  { 2, {8, 5}, {7, 5}, {10, 5} }
 }
 
 local level = levels[1]
@@ -296,6 +308,20 @@ function walls.grid_pts_can_see_each_other(pt1, pt2)
   else
     return false
   end
+end
+
+function walls.new_baddies_for_level(level_num)
+  local baddies = {}
+  for _, baddy_info in pairs(baddy_data) do
+    if baddy_info[1] == level_num then
+      local init_pt = baddy_info[2]
+      local b = Baddy:new(init_pt[1], init_pt[2])
+      for i = 3, #baddy_info do
+        b:add_pace_pt(baddy_info[i][1], baddy_info[i][2])
+      end
+    end
+  end
+  return baddies
 end
 
 
