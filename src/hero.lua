@@ -30,6 +30,15 @@ local dead_sprite
 -- Utility functions.
 --------------------------------------------------------------------------------
 
+local function min(...)
+  local t = {...}
+  local v = t[1]
+  for i = 2, #t do
+    if t[i] < v then v = t[i] end
+  end
+  return v
+end
+
 local function sign(x)
   if x < 0 then return -1 end
   if x > 0 then return  1 end
@@ -171,6 +180,24 @@ function Hero:shoot()
   self.last_fired_at = clock
 end
 
+function Hero:eat(cheeseburger)
+  self.health = min(self.health + 1, dbg.max_health)
+  cheeseburger.eaten = true
+end
+
+-- We expect this to be called toward the end of an update, after the hero's
+-- position has been brought up to date.
+function Hero:check_for_cheeseburgers(baddies)
+  local cx, cy, rw, rh = self:virt_bd_box()
+  for _, baddy in pairs(baddies) do
+    local bad_cx, bad_cy, bad_rw, bad_rh = baddy:virt_bd_box()
+    if math.abs(cx - bad_cx) < (rw + bad_rw) and
+       math.abs(cy - bad_cy) < (rh + bad_rh) then
+      self:eat(baddy)
+    end
+  end
+end
+
 function Hero:update(dt, baddies)
 
   clock = clock + dt
@@ -197,6 +224,7 @@ function Hero:update(dt, baddies)
       self.last_move_dir = {sign(dx), sign(dy)}
       normalize(self.last_move_dir)
     end
+    self:check_for_cheeseburgers(baddies)
   end
 
   local cx, cy, rw, rh = self:virt_bd_box()

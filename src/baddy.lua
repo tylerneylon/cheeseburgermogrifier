@@ -107,10 +107,20 @@ function Baddy:can_see_hero(hero, do_draw)
 end
 
 function Baddy:draw()
+  for i = #self.shots, 1, -1 do
+    self.shots[i]:draw()
+    if self.shots[i].done then
+      table.remove(self.shots, i)
+    end
+  end
+
+  if self.eaten then return end
+
   local x, y = walls.grid_to_virt_pt(self.gx, self.gy)
   local w, h = self.w, self.h
 
   if self.is_cheeseburger then
+    love.graphics.setColor(draw.white)
     draw.img(cheeseburger_image, x, y, w, h)
     return
   end
@@ -119,13 +129,6 @@ function Baddy:draw()
 
   if self.hero and dbg.do_draw_vis_lines then
     self:can_see_hero(self.hero, true)
-  end
-
-  for i = #self.shots, 1, -1 do
-    self.shots[i]:draw()
-    if self.shots[i].done then
-      table.remove(self.shots, i)
-    end
   end
 end
 
