@@ -18,6 +18,7 @@ local dbg      = require 'dbg'
 local draw     = require 'draw'
 local events   = require 'events'
 local Hero     = require 'hero'
+local status   = require 'status'
 local walls    = require 'walls'
 
 
@@ -163,6 +164,7 @@ function game.draw()
     baddy:draw()
   end
   hero:draw()
+  status.draw(hero)
 end
 
 function game.keypressed(key, isrepeat)

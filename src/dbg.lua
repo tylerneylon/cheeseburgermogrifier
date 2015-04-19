@@ -12,6 +12,7 @@ require 'strict'  -- Enforce careful global variable usage.
 
 local dbg = {}
 
+dbg.max_health  = 3
 dbg.hero_speed  = 0.05
 dbg.baddy_speed = 1.0
 

@@ -73,6 +73,7 @@ local Hero = {w = hero_w, h = hero_h}
 function Hero:new(gx, gy)
   local h = { gx = gx, gy = gy, keys_down = {} }
   h.gw, h.gh = walls.grid_sprite_size()
+  h.health = dbg.max_health
   return setmetatable(h, {__index = self})
 end
 
