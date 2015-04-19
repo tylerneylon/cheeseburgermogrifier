@@ -14,6 +14,7 @@ require 'strict'  -- Enforce careful global variable usage.
 local dbg      = require 'dbg'
 local draw     = require 'draw'
 local Shot     = require 'shot'
+local sounds   = require 'sounds'
 local walls    = require 'walls'
 
 
@@ -180,6 +181,7 @@ function Hero:shoot()
                  self.gy + 0.5 * self.gh }
   table.insert(self.shots, Shot:new(g_pt, self.last_move_dir, shot_color))
   self.last_fired_at = clock
+  sounds.shoot:play()
 end
 
 function Hero:eat(cheeseburger)

@@ -133,10 +133,9 @@ function game.update(dt)
   end
 
   if game.villain and game.villain.health == 0 and not game.is_won then
+    -- Put any one-time game-won actions here.
     game.is_won = true
-    print('game was won!')
   end
-
 end
  
 function game.draw()

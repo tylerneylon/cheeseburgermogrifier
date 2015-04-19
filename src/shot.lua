@@ -13,6 +13,7 @@ require 'strict'  -- Enforce careful global variable usage.
 
 local dbg      = require 'dbg'
 local draw     = require 'draw'
+local sounds   = require 'sounds'
 local walls    = require 'walls'
 
 
@@ -139,6 +140,9 @@ function Shot:update(dt, hero_or_baddies)
     end
     local dist  = norm(delta) / norm(self.dir)
     if dist < dbg.shot_len then
+      if self.ending_perc == 0 then
+        sounds.shot_wall:play()
+      end
       self.ending_perc = 1 - dist / dbg.shot_len
     end
   end
