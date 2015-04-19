@@ -22,6 +22,7 @@ local walls    = require 'walls'
 --------------------------------------------------------------------------------
 
 local clock = 0
+local shot_color = {60, 160, 220}
 
 
 --------------------------------------------------------------------------------
@@ -146,7 +147,7 @@ end
 function Hero:shoot()
   local g_pt = { self.gx + 0.5 * self.gw,
                  self.gy + 0.5 * self.gh }
-  table.insert(self.shots, Shot:new(g_pt, self.last_move_dir))
+  table.insert(self.shots, Shot:new(g_pt, self.last_move_dir, shot_color))
   self.last_fired_at = clock
 end
 

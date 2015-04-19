@@ -54,13 +54,14 @@ end
 local Shot = {}
 
 -- This accepts and thinks mostly in terms of grid coords.
-function Shot:new(g_pt, dir)
+function Shot:new(g_pt, dir, color)
   assert(g_pt and dir)
   -- We expect dir to be essentially a unit vector.
   assert(math.abs(norm(dir) - 1) < 0.001)
   local s = { gx = g_pt[1], gy = g_pt[2], dir = dir }
   s.ending_perc = 0
   s.hit_pt = walls.ray_hits_at({s.gx, s.gy}, s.dir)
+  s.color = color or {60, 160, 220}
 
   -- Set up random directions for hit blasts.
   s.hit_blasts = {}
@@ -84,7 +85,7 @@ function Shot:draw()
   local x2, y2 = walls.grid_to_virt_pt(self.gx + self.dir[1] * len,
                                        self.gy + self.dir[2] * len)
   love.graphics.setLineWidth(2)
-  love.graphics.setColor({60, 160, 220})
+  love.graphics.setColor(self.color)
   draw.line(x1, y1, x2, y2)
   love.graphics.setLineWidth(1)
 

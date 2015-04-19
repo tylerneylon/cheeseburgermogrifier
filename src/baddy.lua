@@ -27,6 +27,7 @@ local walls    = require 'walls'
 --------------------------------------------------------------------------------
 
 local clock = 0
+local shot_color = {200, 90, 90}
 
 
 --------------------------------------------------------------------------------
@@ -159,7 +160,7 @@ function Baddy:shoot_at(dest)
   local g_pt = { self.gx + 0.5 * self.gw, self.gy + 0.5 * self.gh }
   local dir = { dest[1] - g_pt[1], dest[2] - g_pt[2] }
   normalize(dir)
-  table.insert(self.shots, Shot:new(g_pt, dir))
+  table.insert(self.shots, Shot:new(g_pt, dir, shot_color))
   self.last_shot_fired_at = clock
 end
 
