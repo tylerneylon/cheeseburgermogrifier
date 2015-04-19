@@ -13,14 +13,40 @@ local walls = {}
 -- Require modules.
 --------------------------------------------------------------------------------
 
+local dbg      = require 'dbg'
 local draw     = require 'draw'
+
+
+--------------------------------------------------------------------------------
+-- Internal globals, except level data which is below.
+--------------------------------------------------------------------------------
+
+local g = {}  -- Set during initialization.
+
+local sprite_scale = 0.85
 
 
 --------------------------------------------------------------------------------
 -- Internal level data.
 --------------------------------------------------------------------------------
 
-local level = [[
+local levels = {
+[[
+11111111111111
+1            1
+1            1
+1            1
+1            1
+1            1
+1            2
+1            1
+1            1
+1            1
+1            1
+11111111111111
+]],
+
+[[
 11111111111111
 1            1
 1            1
@@ -34,10 +60,9 @@ local level = [[
 1            1
 11111111111111
 ]]
+}
 
-local g = {}  -- Set during initialization.
-
-local sprite_scale = 0.85
+local level = levels[1]
 
 
 --------------------------------------------------------------------------------
@@ -57,10 +82,10 @@ local function get_wall_grid()
     for i = 1, #line do
       if g[x] == nil then g[x] = {} end
       local c = line:sub(i, i)
-      if c == '1' then
-        g[x][y] = 1
-      else
+      if c == ' ' then
         g[x][y] = 0
+      else
+        g[x][y] = tonumber(c)
       end
       x = x + 1
     end
@@ -103,9 +128,16 @@ function walls.draw()
   local x, y = -1, 1 - h
   for gy = g.h, 1, -1 do
     for gx = 1, g.w do
-      if g[gx][gy] == 1 then
+      if g[gx][gy] ~= 0 then
         --print(string.format('drawing: %10g, %10g, %10g, %10g', x, y, w, h))
         draw.rect(x, y, w, h)
+        love.graphics.setColor(draw.black)
+
+        if dbg.do_draw_bounds then
+          local eps = 0.01
+          draw.rect(x + eps, y + eps, w - 2 * eps, h - 2 * eps, draw.black, 'line')
+          draw.str(tostring(g[gx][gy]), x, y + h / 2, w, 'center')
+        end
       end
       x = x + w
     end
@@ -143,7 +175,7 @@ function walls.hit_test(x, y, w, h)
 
   for gy = 1, g.h do
     for gx = 1, g.w do
-      if g[gx][gy] == 1 and is_a_hit(gx, gy) then
+      if g[gx][gy] ~= 0 and is_a_hit(gx, gy) then
         return true
       end
     end
@@ -199,7 +231,7 @@ end
 function walls.grid_pt_hits_a_wall(gx, gy)
   for x = math.ceil(gx - 1), math.floor(gx) do
     for y = math.ceil(gy - 1), math.floor(gy) do
-      if g[x] and g[x][y] == 1 then return true end
+      if g[x] and g[x][y] ~= 0 then return true end
     end
   end
   return false
@@ -210,6 +242,8 @@ end
 -- Returns either false or the first point along the ray where we
 -- hit a wall.
 function walls.ray_hits_at(pt, dir)
+  --pr('ray_hits_at: pt=(%g, %g) dir=(%g, %g)', pt[1], pt[2], dir[1], dir[2])
+
   assert(pt and dir)
   -- Make local copies we can edit.
   local pt = {pt[1], pt[2]}
@@ -240,6 +274,7 @@ end
 
 -- Tests if walls block the line of sight between the two given points.
 function walls.grid_pts_can_see_each_other(pt1, pt2)
+  --pr('grid_pts_can_see_each_other: (%g, %g) (%g, %g)', pt1[1], pt1[2], pt2[1], pt2[2])
 
   -- Turn this on to regularly see the wall grid (for the debuggings).
   --[[

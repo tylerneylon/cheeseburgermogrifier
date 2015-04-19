@@ -36,7 +36,7 @@ dbg.do_draw_bounds    = true
 dbg.do_draw_vis_lines = true
 dbg.do_draw_shoot_dir = true
 
-local production = true
+local production = false
 if production then
   dbg.do_draw_bounds    = false
   dbg.do_draw_vis_lines = false

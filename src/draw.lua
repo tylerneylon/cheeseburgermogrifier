@@ -171,9 +171,7 @@ function draw.str(s, x, y, limit, align)
   local win_w, win_h = win_size()
   x, y = (x + 1) * win_w / 2, (1 - y) * win_h / 2
   limit = limit * win_w / 2
-
   if align == 'right' then x = x - limit end
-
   love.graphics.printf(s, x, y, limit, align)
 end
 

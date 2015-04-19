@@ -190,10 +190,12 @@ end
 function Hero:check_for_cheeseburgers(baddies)
   local cx, cy, rw, rh = self:virt_bd_box()
   for _, baddy in pairs(baddies) do
-    local bad_cx, bad_cy, bad_rw, bad_rh = baddy:virt_bd_box()
-    if math.abs(cx - bad_cx) < (rw + bad_rw) and
-       math.abs(cy - bad_cy) < (rh + bad_rh) then
-      self:eat(baddy)
+    if baddy.is_cheeseburger and not baddy.eaten then
+      local bad_cx, bad_cy, bad_rw, bad_rh = baddy:virt_bd_box()
+      if math.abs(cx - bad_cx) < (rw + bad_rw) and
+         math.abs(cy - bad_cy) < (rh + bad_rh) then
+        self:eat(baddy)
+      end
     end
   end
 end
