@@ -89,6 +89,7 @@ function Hero:new(gx, gy)
   h.health = dbg.max_health
   h.last_move_dir = {1, 0}
   h.shots = {}
+  h.is_hero = true
   return setmetatable(h, {__index = self})
 end
 
@@ -151,12 +152,12 @@ function Hero:shoot()
   self.last_fired_at = clock
 end
 
-function Hero:update(dt)
+function Hero:update(dt, baddies)
 
   clock = clock + dt
 
   for _, shot in pairs(self.shots) do
-    shot:update(dt)
+    shot:update(dt, baddies)
   end
 
   if self.tmp_dir_ends_at and self.tmp_dir_ends_at < clock then

@@ -155,7 +155,7 @@ function game.update(dt)
   end
 
   -- Update the hero.
-  hero:update(dt)
+  hero:update(dt, baddies)
 end
  
 function game.draw()

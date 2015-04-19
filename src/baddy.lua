@@ -66,6 +66,7 @@ function Baddy:new(gx, gy)
   b.w,  b.h  = walls.sprite_size()
   b.gw, b.gh = walls.grid_sprite_size()
   b.shots = {}
+  b.is_baddy = true
   return setmetatable(b, {__index = self})
 end
 
@@ -162,6 +163,23 @@ function Baddy:shoot_at(dest)
   normalize(dir)
   table.insert(self.shots, Shot:new(g_pt, dir, shot_color))
   self.last_shot_fired_at = clock
+end
+
+-- This returns cx, cy, rw, rh, which means the center point and the
+-- radius-ish width and height; all in virtual coords.
+function Baddy:virt_bd_box(gx, gy)
+  gx = gx or self.gx
+  gy = gy or self.gy
+  local x, y = walls.grid_to_virt_pt(gx, gy)
+  -- TODO Avoid defining the magic numbers 0.2/0.45 in more than one place.
+  --      Better yet, name them clearly as well.
+  local rw, rh = self.w * 0.2, self.h * 0.45
+  local cx, cy = x + self.w / 2, y + self.h / 2
+  return cx, cy, rw, rh
+end
+
+function Baddy:got_hit_by_blast_going_in_dir(dir)
+  print('Baddy was hit!')
 end
 
 function Baddy:update(dt, hero)

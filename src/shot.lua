@@ -101,25 +101,34 @@ function Shot:draw()
   end
 end
 
-function Shot:update(dt, hero)
+function Shot:handle_if_char_hit(char)
+  local end_grid_pt = {
+    self.gx + self.dir[1] * dbg.shot_len,
+    self.gy + self.dir[2] * dbg.shot_len
+  }
+  local end_pt = walls.grid_to_virt_pt(end_grid_pt)
+  local cx, cy, rw, rh = char:virt_bd_box()
+  if math.abs(cx - end_pt[1]) < rw and
+     math.abs(cy - end_pt[2]) < rh then
+    -- There char was hit!
+    char:got_hit_by_blast_going_in_dir(self.dir)
+    self.done = true
+  end
+end
+
+function Shot:update(dt, hero_or_baddies)
   if self.done then return end
 
   self.gx = self.gx + dt * self.dir[1] * dbg.shot_speed
   self.gy = self.gy + dt * self.dir[2] * dbg.shot_speed
 
-  -- If we are handed the hero, test for a hit.
-  if hero then
-    local end_grid_pt = {
-      self.gx + self.dir[1] * dbg.shot_len,
-      self.gy + self.dir[2] * dbg.shot_len
-    }
-    local end_pt = walls.grid_to_virt_pt(end_grid_pt)
-    local cx, cy, rw, rh = hero:virt_bd_box()
-    if math.abs(cx - end_pt[1]) < rw and
-       math.abs(cy - end_pt[2]) < rh then
-      -- There hero was hit!
-      hero:got_hit_by_blast_going_in_dir(self.dir)
-      self.done = true
+  if hero_or_baddies.is_hero then
+    local hero = hero_or_baddies    -- For clarity.
+    self:handle_if_char_hit(hero)
+  else
+    local baddies = hero_or_baddies -- For clarity.
+    for _, baddy in pairs(baddies) do
+      self:handle_if_char_hit(baddy)
     end
   end
 
