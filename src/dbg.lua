@@ -28,11 +28,13 @@ dbg.status_height = 30
 
 dbg.do_draw_bounds    = true
 dbg.do_draw_vis_lines = true
+dbg.do_draw_shoot_dir = true
 
-local production = true
+local production = false
 if production then
   dbg.do_draw_bounds    = false
   dbg.do_draw_vis_lines = false
+  dbg.do_draw_shoot_dir = false
 end
 
 -- If dbg.cycles_per_frame = 1, then it's full speed (normal operation), if

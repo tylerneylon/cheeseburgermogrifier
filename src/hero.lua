@@ -85,6 +85,7 @@ function Hero:new(gx, gy)
   local h = { gx = gx, gy = gy, keys_down = {} }
   h.gw, h.gh = walls.grid_sprite_size()
   h.health = dbg.max_health
+  h.last_move_dir = {1, 0}
   return setmetatable(h, {__index = self})
 end
 
@@ -96,6 +97,13 @@ function Hero:draw()
   if dbg.do_draw_bounds then
     local cx, cy, rw, rh = self:virt_bd_box()
     draw.rect_w_mid_pt(cx, cy, 2 * rw, 2 * rh, {255, 0, 0}, 'line')
+  end
+
+  if dbg.do_draw_shoot_dir and self.last_move_dir then
+    local dir = self.last_move_dir
+    local x1, y1 = x + w / 2, y + h / 2
+    local x2, y2 = x1 + dir[1] * 0.2, y1 + dir[2] * 0.2
+    draw.line(x1, y1, x2, y2)
   end
 end
 
@@ -131,8 +139,16 @@ function Hero:update(dt)
   assert(#self.keys_down <= 2)
 
   local w, h = self.w, self.h
-  local function done(gx, gy)
+  local function done(gx, gy, keyset)
+    keyset = keyset or {}
     self.gx, self.gy = gx, gy
+    local dx, dy = move_for_keys(0, 0, keyset)
+    -- Only update the last_move_dir if we have a dir to work with. The hero
+    -- keeps pointing the gun somewhere even when they're standing still.
+    if math.abs(norm({dx, dy})) > 0.01 then
+      self.last_move_dir = {sign(dx), sign(dy)}
+      normalize(self.last_move_dir)
+    end
   end
 
   local cx, cy, rw, rh = self:virt_bd_box()
@@ -144,7 +160,7 @@ function Hero:update(dt)
   local gx, gy = move_for_keys(gx_init, gy_init, self.keys_down)
   local cx, cy = self:virt_bd_box(gx, gy)
   if not walls.hit_test(cx - rw, cy - rh, 2 * rw, 2 * rh) then
-    return done(gx, gy)
+    return done(gx, gy, self.keys_down)
   end
 
   for key in pairs(self.keys_down) do
@@ -152,7 +168,7 @@ function Hero:update(dt)
     local gx, gy = move_for_keys(gx_init, gy_init, k)
     local cx, cy = self:virt_bd_box(gx, gy)
     if not walls.hit_test(cx - rw, cy - rh, 2 * rw, 2 * rh) then
-      return done(gx, gy)
+      return done(gx, gy, k)
     end
   end
 
@@ -161,6 +177,9 @@ function Hero:update(dt)
   if not walls.hit_test(cx - rw, cy - rh, 2 * rw, 2 * rh) then
     return done(gx_init, gy_init)
   end
+
+  -- If even that fails, stick with the original position.
+  done(self.gx, self.gy)
 end
 
 function Hero:key_down(key)
