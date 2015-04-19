@@ -34,16 +34,16 @@ local levels = {
   -- Level 1.
 [[
 11111111111111
-1            1
-1            1
+1           11
+1           11
 1            2
-1            1
-1            1
-1            1
-1            1
-1            1
-1            1
-1            1
+1           11
+1           11
+1           11
+1           11
+1           11
+1           11
+1           11
 11111111111111
 ]],
 
@@ -129,6 +129,21 @@ local function pr(...)
   print(string.format(...))
 end
 
+local function grid_type_is_door(grid_type)
+  return grid_type == 2
+end
+
+-- First pair is floating pt, second pair is an integer corner.
+local function grid_pt_hits_door(gx, gy, crnr_x, crnr_y)
+  gx, gy = gx + dbg.char_bd_w, gy + dbg.char_bd_h
+  local cx, cy = crnr_x + 0.5, crnr_y + 0.5
+  local door_extra = 0.2
+  local w = dbg.char_bd_w + 0.5 + door_extra
+  local h = dbg.char_bd_h + 0.5 + door_extra
+  return math.abs(cx - gx) < w and
+         math.abs(cy - gy) < h
+end
+
 
 --------------------------------------------------------------------------------
 -- Public functions.
@@ -196,6 +211,18 @@ function walls.hit_test(x, y, w, h)
   return false
 end
 
+function walls.does_hit_door(gx, gy)
+  local corner_x, corner_y = math.floor(gx) - 1, math.floor(gy) - 1
+  for x = corner_x, corner_x + 2 do
+    for y = corner_y, corner_y + 2 do
+      if grid_type_is_door(g[x][y]) and grid_pt_hits_door(gx, gy, x, y) then
+        return true
+      end
+    end
+  end
+  return false
+end
+
 function walls.sprite_hit_test(gx, gy)
   local x, y = walls.grid_to_virt_pt(gx, gy)
   local w = sprite_scale / g.w * 2
@@ -248,8 +275,6 @@ function walls.grid_pt_hits_a_wall(gx, gy)
   end
   return false
 end
-
--- TODO Remove the redundancy between the following two functions.
 
 -- Returns either false or the first point along the ray where we
 -- hit a wall.

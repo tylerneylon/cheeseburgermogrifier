@@ -227,6 +227,12 @@ function Hero:update(dt, baddies)
       normalize(self.last_move_dir)
     end
     self:check_for_cheeseburgers(baddies)
+
+    if walls.does_hit_door(self.gx, self.gy) then
+      -- TODO React to hitting the door.
+      print('hit a door!')
+    end
+
   end
 
   local cx, cy, rw, rh = self:virt_bd_box()
