@@ -96,11 +96,11 @@ function draw.rect(x, y, w, h, color, mode)
   love.graphics.rectangle(mode, x, y, w, h)
 end
 
-function draw.rect_w_mid_pt(mid_x, mid_y, w, h, color)
+function draw.rect_w_mid_pt(mid_x, mid_y, w, h, color, mode)
   -- Set (x, y) to the lower-left corner of the rectangle.
   local x = mid_x - w / 2
   local y = mid_y - h / 2
-  draw.rect(x, y, w, h, color)
+  draw.rect(x, y, w, h, color, mode)
 end
 
 function draw.rotated_rect(mid_x, mid_y, w, h, color, angle)

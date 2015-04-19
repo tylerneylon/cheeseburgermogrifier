@@ -110,6 +110,7 @@ function walls.draw()
   end
 end
 
+-- The inputs are in virtual coords.
 function walls.hit_test(x, y, w, h)
 
   -- Box radii.

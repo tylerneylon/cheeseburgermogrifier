@@ -81,6 +81,22 @@ function Hero:draw()
   local x, y = walls.grid_to_virt_pt(self.gx, self.gy)
   local w, h = self.w, self.h
   draw.hero(x, y, w, h, 'good')
+
+  if dbg.do_draw_bounds then
+    local cx, cy, rw, rh = self:virt_bd_box()
+    draw.rect_w_mid_pt(cx, cy, 2 * rw, 2 * rh, {255, 0, 0}, 'line')
+  end
+end
+
+-- This returns cx, cy, rw, rh, which means the center point and the
+-- radius-ish width and height; all in virtual coords.
+function Hero:virt_bd_box(gx, gy)
+  gx = gx or self.gx
+  gy = gy or self.gy
+  local x, y = walls.grid_to_virt_pt(gx, gy)
+  local rw, rh = self.w * 0.2, self.h * 0.45
+  local cx, cy = x + self.w / 2, y + self.h / 2
+  return cx, cy, rw, rh
 end
 
 function Hero:update(dt)
@@ -92,13 +108,21 @@ function Hero:update(dt)
     self.gx, self.gy = gx, gy
   end
 
+  local cx, cy, rw, rh = self:virt_bd_box()
+
   local gx, gy = move_for_keys(self.gx, self.gy, self.keys_down)
-  if not walls.sprite_hit_test(gx, gy) then return done(gx, gy) end
+  local cx, cy = self:virt_bd_box(gx, gy)
+  if not walls.hit_test(cx - rw, cy - rh, 2 * rw, 2 * rh) then
+    return done(gx, gy)
+  end
 
   for key in pairs(self.keys_down) do
     local k = {[key] = true}
     local gx, gy = move_for_keys(self.gx, self.gy, k)
-    if not walls.sprite_hit_test(gx, gy) then return done(gx, gy) end
+    local cx, cy = self:virt_bd_box(gx, gy)
+    if not walls.hit_test(cx - rw, cy - rh, 2 * rw, 2 * rh) then
+      return done(gx, gy)
+    end
   end
 end
 
