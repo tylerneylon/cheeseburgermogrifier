@@ -15,8 +15,8 @@ local dbg = {}
 -- TEMP usually 3
 dbg.max_health  = 10
 
-dbg.hero_speed  = 0.05  -- usually 0.05
-dbg.baddy_speed = 1.0
+dbg.hero_speed  = 0.1  -- TEMP usually 0.05
+dbg.baddy_speed = 2.0  -- TEMP usually 1.0
 
 -- These are ratios of the sprite to be used as half-sizes of the bounding box.
 -- To be clear, values = 0.5 would treat the whole sprite as the bounding box.
