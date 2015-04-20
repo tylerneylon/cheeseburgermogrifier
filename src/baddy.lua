@@ -31,6 +31,8 @@ local clock = 0
 local shot_color = {200, 90, 90}
 local cheeseburger_image
 local num_cb_so_far = 0
+local baddy_image
+local villain_image
 
 
 --------------------------------------------------------------------------------
@@ -131,7 +133,13 @@ function Baddy:draw()
     return
   end
 
-  draw.hero(x, y, w, h, 'bad')
+  local sprite = baddy_image
+  if self.is_villain then
+    sprite = villain_image
+  end
+
+  draw.img(sprite, x, y)
+  --draw.hero(x, y, w, h, 'bad')
 
   if self.hero and dbg.do_draw_vis_lines then
     self:can_see_hero(self.hero, true)
@@ -254,6 +262,8 @@ end
 --------------------------------------------------------------------------------
 
 cheeseburger_image = love.graphics.newImage('img/cheeseburger.png')
+baddy_image = love.graphics.newImage('img/baddy.png')
+villain_image = love.graphics.newImage('img/villain.png')
 
 
 --------------------------------------------------------------------------------

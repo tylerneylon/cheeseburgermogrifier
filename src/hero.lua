@@ -25,6 +25,7 @@ local walls    = require 'walls'
 local clock = 0
 local shot_color = {60, 160, 220}
 local dead_sprite
+local hero_sprite
 
 
 --------------------------------------------------------------------------------
@@ -121,7 +122,8 @@ function Hero:draw()
     return
   end
 
-  draw.hero(x, y, w, h, 'good')
+  draw.img(hero_sprite, x, y)
+  --draw.hero(x, y, w, h, 'good')
 
   if dbg.do_draw_bounds then
     local cx, cy, rw, rh = self:virt_bd_box()
@@ -300,6 +302,7 @@ end
 --------------------------------------------------------------------------------
 
 dead_sprite = love.graphics.newImage('img/dead_sprite2.png')
+hero_sprite = love.graphics.newImage('img/hero.png')
 
 
 --------------------------------------------------------------------------------

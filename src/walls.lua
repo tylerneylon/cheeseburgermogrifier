@@ -24,6 +24,8 @@ local draw     = require 'draw'
 local g = {}  -- Set during initialization.
 
 local sprite_scale = 0.85
+local wall_sprite = love.graphics.newImage('img/wall.png')
+local door_sprite = love.graphics.newImage('img/door.png')
 
 
 --------------------------------------------------------------------------------
@@ -350,7 +352,15 @@ function walls.draw()
     for gx = 1, g.w do
       if g[gx][gy] ~= 0 then
         --print(string.format('drawing: %10g, %10g, %10g, %10g', x, y, w, h))
-        draw.rect(x, y, w, h)
+
+        local sprite = wall_sprite
+        if g[gx][gy] == 2 then
+          sprite = door_sprite
+        end
+
+        draw.img(sprite, x, y)
+
+        --draw.rect(x, y, w, h)
         love.graphics.setColor(draw.black)
 
         if dbg.do_draw_bounds then

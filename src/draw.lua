@@ -97,6 +97,7 @@ function draw.rect(x, y, w, h, color, mode)
   y = y - h
 
   -- Draw the rectangle.
+  --pr('rect %g x %g', w, h)
   love.graphics.rectangle(mode, x, y, w, h)
 end
 
@@ -122,6 +123,8 @@ function draw.img(img, x, y, w, h)
 
   -- Shift y since love.graphics draws from the upper-left corner.
   y = y - h
+
+  love.graphics.setColor(draw.white)
 
   -- Draw the rectangle.
   love.graphics.draw(img, x, y)

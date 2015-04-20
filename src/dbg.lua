@@ -16,8 +16,8 @@ local dbg = {}
 dbg.max_health  = 10
 dbg.villain_max_health = 6
 
-dbg.hero_speed  = 0.1  -- TEMP usually 0.05
-dbg.baddy_speed = 2.0  -- TEMP usually 1.0
+dbg.hero_speed  = 0.05  -- TEMP usually 0.05
+dbg.baddy_speed = 1.0  -- TEMP usually 1.0
 
 -- These are ratios of the sprite to be used as half-sizes of the bounding box.
 -- To be clear, values = 0.5 would treat the whole sprite as the bounding box.
@@ -31,7 +31,7 @@ dbg.hero_flyback_interval = 0.08
 dbg.hero_flyback_speed    = 10
 
 -- TEMP usually false
-dbg.hero_is_invincible = true
+dbg.hero_is_invincible = false
 
 dbg.baddy_fire_interval = 1
 dbg.hero_fire_interval  = 0.2
@@ -39,13 +39,13 @@ dbg.hero_fire_interval  = 0.2
 dbg.status_height = 30
 
 -- TEMP 1.5 usually
-dbg.level_intro_interval = 1.5
+dbg.level_intro_interval = 2
 
 dbg.do_draw_bounds    = true
 dbg.do_draw_vis_lines = true
 dbg.do_draw_shoot_dir = true
 
-local production = false
+local production = true
 if production then
   dbg.do_draw_bounds    = false
   dbg.do_draw_vis_lines = false

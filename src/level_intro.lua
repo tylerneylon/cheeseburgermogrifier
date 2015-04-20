@@ -29,6 +29,7 @@ local level_image
 local num_images = {}
 local clock = 0
 local took_over_at
+local title_image
 
 
 --------------------------------------------------------------------------------
@@ -47,6 +48,8 @@ function level_intro.draw()
   draw.img(level_image, -0.8, -0.25)
   local num_img = num_images[level_num - 1]
   draw.img(num_img, 0.3, -0.25)
+
+  draw.img(title_image, -0.8, -0.9)
 end
 
 function level_intro.keypressed(key, isrepeat)
@@ -68,6 +71,9 @@ end
 
 level_image = love.graphics.newImage('img/level.png')
 assert(level_image)
+
+title_image = love.graphics.newImage('img/title.png')
+assert(title_image)
 
 for i = 0, 8 do
   num_images[i] = love.graphics.newImage('img/' .. i .. '.png')
