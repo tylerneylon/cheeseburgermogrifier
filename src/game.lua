@@ -31,6 +31,7 @@ local baddies = {}
 local hero
 local you_died_image
 local you_won_image
+local controls_image
 
 -- TEMP normally start with level_num = 0
 local level_num = 0
@@ -143,6 +144,10 @@ end
 function game.draw()
   walls.draw()
 
+  if level_num == 1 then
+    draw.img_w_mid_pt(controls_image, 0, 0)
+  end
+
   for _, baddy in pairs(baddies) do
     if not game.is_won or baddy.is_cheeseburger then
       baddy:draw()
@@ -215,6 +220,7 @@ you_died_image = love.graphics.newImage('img/you_died2.png')
 assert(you_died_image)
 you_won_image = love.graphics.newImage('img/you_won.png')
 assert(you_won_image)
+controls_image = love.graphics.newImage('img/controls.png')
 
 
 --------------------------------------------------------------------------------
