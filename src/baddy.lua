@@ -27,7 +27,6 @@ local walls    = require 'walls'
 -- Internal globals.
 --------------------------------------------------------------------------------
 
-local clock = 0
 local shot_color = {200, 90, 90}
 local cheeseburger_image
 local num_cb_so_far = 0
@@ -72,6 +71,7 @@ function Baddy:new(gx, gy, is_villain)
   b.gw, b.gh = walls.grid_sprite_size()
   b.shots = {}
   b.is_baddy = true
+  b.clock = 0
   if is_villain then
     b.is_villain = true
     b.health = dbg.villain_max_health
@@ -177,7 +177,7 @@ end
 function Baddy:can_shoot_now()
   if self.last_shot_fired_at == nil then return true end
 
-  local time_since_last_shot = clock - self.last_shot_fired_at
+  local time_since_last_shot = self.clock - self.last_shot_fired_at
   return time_since_last_shot > dbg.baddy_fire_interval
 end
 
@@ -187,7 +187,7 @@ function Baddy:shoot_at(dest)
   local dir = { dest[1] - g_pt[1], dest[2] - g_pt[2] }
   normalize(dir)
   table.insert(self.shots, Shot:new(g_pt, dir, shot_color))
-  self.last_shot_fired_at = clock
+  self.last_shot_fired_at = self.clock
 end
 
 -- This returns cx, cy, rw, rh, which means the center point and the
@@ -225,7 +225,7 @@ function Baddy:got_hit_by_blast_going_in_dir(dir)
 end
 
 function Baddy:update(dt, hero)
-  clock = clock + dt
+  self.clock = self.clock + dt
 
   for _, shot in pairs(self.shots) do
     shot:update(dt, hero)

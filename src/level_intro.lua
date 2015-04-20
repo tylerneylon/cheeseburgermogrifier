@@ -18,6 +18,7 @@ local level_intro = {}
 local dbg  = require 'dbg'
 local draw = require 'draw'
 local game = require 'game'
+local sounds = require 'sounds'
 
 
 --------------------------------------------------------------------------------
@@ -31,6 +32,7 @@ local clock = 0
 local took_over_at
 local title_image
 
+local interval = dbg.level_intro_interval
 
 --------------------------------------------------------------------------------
 -- Public functions.
@@ -39,7 +41,7 @@ local title_image
 function level_intro.update(dt)
   clock = clock + dt
 
-  if clock - took_over_at > dbg.level_intro_interval then
+  if clock - took_over_at > interval then
     game.take_over_and_next_level()
   end
 end
@@ -60,6 +62,12 @@ end
 
 function level_intro.show_intro_for_level(new_level_num)
   level_num = new_level_num
+  if level_num == 1 then
+    sounds.intro:play()
+    interval = 5
+  else
+    interval = dbg.level_intro_interval
+  end
   love.give_control_to(level_intro)
   took_over_at = clock
 end

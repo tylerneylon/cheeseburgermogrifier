@@ -153,6 +153,7 @@ end
 function Hero:die()
   self.dead = true
   self.keys_down = {}
+  sounds.died:play()
 end
 
 function Hero:got_hit_by_blast_going_in_dir(dir)

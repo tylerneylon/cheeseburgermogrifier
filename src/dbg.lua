@@ -13,7 +13,7 @@ require 'strict'  -- Enforce careful global variable usage.
 local dbg = {}
 
 -- TEMP usually 3
-dbg.max_health  = 10
+dbg.max_health  = 5
 dbg.villain_max_health = 6
 
 dbg.hero_speed  = 0.05  -- TEMP usually 0.05
